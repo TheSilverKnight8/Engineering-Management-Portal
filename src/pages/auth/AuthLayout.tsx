@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { AppMark } from '../../graphics/Icons';
 import { ToolArt } from '../../graphics/ToolArt';
+import { CroswellLogo } from '../../graphics/Logo';
 import { APP_NAME, CLASS_NAME, SCHOOL_NAME } from '../../config';
 
 const showcase = ['drill-press', 'bandsaw', 'miter-saw', 'mill', 'table-saw', 'grinder'];
@@ -25,7 +26,11 @@ export function AuthLayout({ children }: { children: ReactNode }) {
             ))}
           </div>
         </div>
-        <div className="stripes stripes-br stripes-lg" aria-hidden />
+        {/* Like the slide: the logo sits in the bottom-left corner, beside the bottom stripes. */}
+        <div className="relative">
+          <div className="stripes stripes-br stripes-lg" aria-hidden />
+          <CroswellLogo className="absolute bottom-0 left-[2%] w-[19%] text-ink" />
+        </div>
       </div>
 
       <div className="flex flex-col bg-surface lg:bg-surface">
@@ -44,6 +49,7 @@ export function AuthLayout({ children }: { children: ReactNode }) {
             {children}
           </div>
         </div>
+        <CroswellLogo className="mx-auto mb-5 w-52 text-ink lg:hidden" />
         <div className="stripes stripes-br mb-3 lg:hidden" aria-hidden />
       </div>
     </div>

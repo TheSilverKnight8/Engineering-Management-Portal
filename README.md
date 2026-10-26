@@ -101,6 +101,7 @@ Only the owner edits these files (they are in the repo, so changes need a commit
 | STE page | `src/content/ste.ts` |
 | App name, school name | `src/config.ts` |
 | Colors, fonts, stripes | `src/index.css` (cream, navy, and red from the Shop Manual; Norwester for headings) |
+| Croswell Industries logo | `src/assets/logo/croswell-industries.svg` (one color; the app draws it navy or cream to match the theme). Shown on the sign-in, join, and password screens. |
 
 ## Staying inside the Free plan
 
