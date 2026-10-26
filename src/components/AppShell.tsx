@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 import { BookOpen, GraduationCap, House, MessagesSquare, Search, ShieldCheck, Warehouse, Wrench, Settings, type LucideIcon } from 'lucide-react';
 import { AppMark } from '../graphics/Icons';
+import { CroswellLogo } from '../graphics/Logo';
 import { APP_NAME, CLASS_NAME, SCHOOL_NAME } from '../config';
 import { useAuth } from '../lib/auth';
 import { canModerate } from '../lib/types';
@@ -191,6 +192,8 @@ export function AppShell({ children }: { children: ReactNode }) {
               Content preview. Connect Supabase to sign in.
             </div>
           ) : null}
+          {/* The logo stays in the bottom-left corner of every screen, as on the title slide. */}
+          <CroswellLogo className="mx-2 mb-1 mt-4 w-[13rem] text-ink" />
         </div>
       </aside>
 
@@ -223,7 +226,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {!immersive && <div className="stripes stripes-tl mt-3 lg:mt-5" aria-hidden />}
       <main className={cx('mx-auto w-full max-w-6xl flex-1 px-4 pt-5 sm:px-6 lg:px-10 lg:pt-8', immersive ? 'pb-0' : 'pb-10 lg:pb-14')}>{children}</main>
-      {!immersive && <div className="stripes stripes-br mb-5" aria-hidden />}
+      {!immersive && (
+        <footer className="mb-5">
+          {/* Phones: the bars have no room, so the logo sits at the bottom-left of every page.
+              Computers show it in the sidebar instead. */}
+          <CroswellLogo className="mb-5 ml-4 w-44 text-ink sm:ml-6 lg:hidden" />
+          <div className="stripes stripes-br" aria-hidden />
+        </footer>
+      )}
       {/* Room for the phone tab bar. */}
       <div className="h-[calc(4rem+env(safe-area-inset-bottom))] shrink-0 lg:hidden" />
 

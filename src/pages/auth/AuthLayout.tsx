@@ -49,7 +49,7 @@ export function AuthLayout({ children }: { children: ReactNode }) {
             {children}
           </div>
         </div>
-        <CroswellLogo className="mx-auto mb-5 w-52 text-ink lg:hidden" />
+        <CroswellLogo className="mb-5 ml-5 w-44 text-ink sm:ml-12 lg:hidden" />
         <div className="stripes stripes-br mb-3 lg:hidden" aria-hidden />
       </div>
     </div>
