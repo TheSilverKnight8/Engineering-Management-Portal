@@ -94,12 +94,13 @@ Only the owner edits these files (they are in the repo, so changes need a commit
 | Tool entries | `src/content/tools.ts`. Keep the text in ASD-STE100. |
 | Demo videos | In `tools.ts`, put the YouTube video ID in `youtubeId`. Add more `{ title, youtubeId }` items for more videos. |
 | Graphics | Put images in `public/media/tools/<slug>/` and list them in the tool's `graphics`. See `public/media/tools/README.md`. |
-| Tool illustrations | `src/graphics/ToolArt.tsx` (SVG line drawings; the cutting or spinning part is drawn in orange). |
+| Tool illustrations | `src/graphics/ToolArt.tsx` (SVG line drawings; the cutting or spinning part is drawn in red). |
 | Safety study guide | `src/content/safety.ts`. Each section has an empty `items` list ready for the study guide content. |
 | Practice projects | `src/content/projects.ts`. Set `status: 'ready'` when a project is written. |
 | Materials notes, picker hints | `src/content/catalog.ts` |
 | STE page | `src/content/ste.ts` |
 | App name, school name | `src/config.ts` |
+| Colors, fonts, stripes | `src/index.css` (cream, navy, and red from the Shop Manual; Norwester for headings) |
 
 ## Staying inside the Free plan
 
@@ -146,4 +147,4 @@ supabase/migrations/   database schema, security rules, storage bucket
 .github/workflows/     deploy to GitHub Pages, daily keep-alive
 ```
 
-Built with React, TypeScript, Vite, Tailwind CSS, TanStack Query, and vite-plugin-pwa.
+Built with React, TypeScript, Vite, Tailwind CSS, TanStack Query, and vite-plugin-pwa. Headings use Norwester by Jamie Wilson (SIL Open Font License, `src/assets/fonts/`).

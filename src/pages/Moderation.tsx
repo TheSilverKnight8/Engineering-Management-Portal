@@ -98,7 +98,7 @@ function ReportCard({ r }: { r: Report }) {
   return (
     <Card className={cx('p-5', r.resolved_at && 'opacity-70')}>
       <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted">
-        <Chip tone={r.target_type === 'post' ? 'blue' : 'neutral'}>{r.target_type === 'post' ? 'Post' : `Message in ${snap.group_name ?? 'a group'}`}</Chip>
+        <Chip tone={r.target_type === 'post' ? 'navy' : 'neutral'}>{r.target_type === 'post' ? 'Post' : `Message in ${snap.group_name ?? 'a group'}`}</Chip>
         <span>
           Reported by {name(r.reporter_id)} · {relativeTime(r.created_at)}
         </span>
@@ -109,10 +109,10 @@ function ReportCard({ r }: { r: Report }) {
         <div className="mb-1 text-xs font-medium text-muted">{snap.author_name ?? name(snap.author_id)} wrote:</div>
         {snap.title && <div className="font-semibold">{snap.title}</div>}
         {snap.body && <p className="mt-1 whitespace-pre-wrap text-sm">{snap.body}</p>}
-        {snap.link_url && <div className="mt-1 truncate text-sm text-blue">{snap.link_url}</div>}
+        {snap.link_url && <div className="mt-1 truncate text-sm text-navy">{snap.link_url}</div>}
       </div>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-        <Link to={link} className="text-sm text-blue hover:underline">
+        <Link to={link} className="text-sm text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">
           See it in context
         </Link>
         {!r.resolved_at && (

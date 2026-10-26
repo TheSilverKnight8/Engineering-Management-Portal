@@ -25,8 +25,8 @@ export default defineConfig({
         scope: base,
         display: 'standalone',
         orientation: 'any',
-        theme_color: '#0a101c',
-        background_color: '#0a101c',
+        theme_color: '#002657',
+        background_color: '#faeeda',
         icons: [
           { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512.png', sizes: '512x512', type: 'image/png' },
@@ -36,7 +36,7 @@ export default defineConfig({
       workbox: {
         // The app shell is cached so the app opens fast like an installed app.
         // Data always comes from Supabase over the network (online-only).
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,otf}'],
         // Font subsets for other alphabets still load on demand; no need to pre-download them.
         globIgnores: ['**/*-cyrillic*', '**/*-greek*', '**/*-vietnamese*'],
         navigateFallback: 'index.html',

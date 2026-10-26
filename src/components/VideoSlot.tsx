@@ -13,7 +13,7 @@ export function VideoSlot({ slot }: { slot: Slot }) {
 
   if (!slot.youtubeId) {
     return (
-      <div className="bp-grid relative flex aspect-[2/1] flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-dashed border-line bg-raised text-center sm:aspect-[3/1]">
+      <div className="relative flex aspect-[2/1] flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-dashed border-line bg-raised text-center sm:aspect-[3/1]">
         <div className="flex size-14 items-center justify-center rounded-full border border-line bg-surface text-muted">
           <Video className="size-6" />
         </div>

@@ -1,6 +1,6 @@
 import { forwardRef, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
 import { Link, type LinkProps } from 'react-router';
-import { Loader2 } from 'lucide-react';
+import { ChevronDown, Loader2 } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 
 /** Joins class names. When two classes set the same thing (h-11 and h-9), the later one wins. */
@@ -12,20 +12,21 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-accent text-on-accent font-semibold shadow-[0_1px_0_rgb(255_255_255/0.25)_inset] hover:brightness-110 active:brightness-95',
+  primary: 'bg-accent text-on-accent hover:brightness-105 active:brightness-95',
   secondary: 'bg-surface text-ink border border-line hover:bg-raised active:bg-raised',
   ghost: 'text-ink hover:bg-raised active:bg-raised',
   danger: 'bg-danger/10 text-danger border border-danger/30 hover:bg-danger/15',
 };
 const sizes: Record<Size, string> = {
-  sm: 'h-9 px-3 text-sm gap-1.5 rounded-lg',
-  md: 'h-11 px-4 text-[0.9375rem] gap-2 rounded-xl',
-  lg: 'h-13 px-5 text-base gap-2 rounded-xl',
+  sm: 'h-9 px-3 text-[0.9375rem] gap-1.5 rounded-lg',
+  md: 'h-11 px-4 text-base gap-2 rounded-xl',
+  lg: 'h-13 px-5 text-lg gap-2 rounded-xl',
 };
 
 export function buttonClass(variant: Variant = 'secondary', size: Size = 'md', className?: string) {
   return cx(
-    'inline-flex shrink-0 items-center justify-center whitespace-nowrap font-medium transition select-none disabled:pointer-events-none disabled:opacity-50',
+    // Norwester capitals, like the Shop Manual's buttons.
+    'inline-flex shrink-0 items-center justify-center whitespace-nowrap font-display uppercase tracking-[0.06em] leading-none transition select-none disabled:pointer-events-none disabled:opacity-50',
     variants[variant],
     sizes[size],
     className,
@@ -62,14 +63,14 @@ export function Card({ className, children, ...rest }: { className?: string; chi
   );
 }
 
-export function Chip({ children, tone = 'neutral', className, icon }: { children: ReactNode; tone?: 'neutral' | 'ok' | 'warn' | 'danger' | 'accent' | 'blue'; className?: string; icon?: ReactNode }) {
+export function Chip({ children, tone = 'neutral', className, icon }: { children: ReactNode; tone?: 'neutral' | 'ok' | 'warn' | 'danger' | 'accent' | 'navy'; className?: string; icon?: ReactNode }) {
   const tones = {
     neutral: 'border-line bg-raised text-ink',
     ok: 'border-ok/30 bg-ok/10 text-ok',
     warn: 'border-warn/35 bg-warn/12 text-warn',
     danger: 'border-danger/30 bg-danger/10 text-danger',
-    accent: 'border-accent/30 bg-accent/10 text-accent',
-    blue: 'border-blue/30 bg-blue/10 text-blue',
+    accent: 'border-accent/35 bg-accent/12 text-warn',
+    navy: 'border-navy/30 bg-navy/10 text-navy',
   };
   return (
     <span className={cx('inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium leading-none', tones[tone], className)}>
@@ -125,7 +126,7 @@ export function Field({ label, hint, error, children, htmlFor }: { label: string
 }
 
 const inputBase =
-  'w-full rounded-xl border border-line bg-raised px-3.5 text-[0.9375rem] text-ink placeholder:text-muted/70 outline-none transition focus:border-blue focus:bg-surface focus:ring-3 focus:ring-blue/15';
+  'w-full rounded-xl border border-line bg-raised px-3.5 text-[0.9375rem] text-ink placeholder:text-muted/70 outline-none transition focus:border-navy focus:bg-surface focus:ring-3 focus:ring-navy/15';
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(function Input({ className, ...rest }, ref) {
   return <input ref={ref} className={cx(inputBase, 'h-11', className)} {...rest} />;
@@ -135,11 +136,14 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<H
   return <textarea ref={ref} className={cx(inputBase, 'min-h-24 py-2.5 leading-relaxed', className)} {...rest} />;
 });
 
-export function Select({ className, children, ...rest }: SelectHTMLAttributes<HTMLSelectElement>) {
+export function Select({ className, wrapperClassName, children, ...rest }: SelectHTMLAttributes<HTMLSelectElement> & { wrapperClassName?: string }) {
   return (
-    <select className={cx(inputBase, 'h-11 appearance-none bg-[length:16px] bg-[right_12px_center] bg-no-repeat pr-9', className)} style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238e9bb5' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")` }} {...rest}>
-      {children}
-    </select>
+    <div className={cx('relative', wrapperClassName)}>
+      <select className={cx(inputBase, 'h-11 appearance-none pr-9', className)} {...rest}>
+        {children}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted" />
+    </div>
   );
 }
 
@@ -165,18 +169,17 @@ export function Segmented<T extends string>({ value, onChange, options, classNam
   );
 }
 
-const avatarHues = [212, 24, 160, 268, 340, 190, 44, 120];
+const avatarColors = ['#002657', '#fc3f3f', '#2d4f7f', '#b9302f'];
 
 export function Avatar({ name, size = 32, className }: { name: string; size?: number; className?: string }) {
   const parts = name.trim().split(/\s+/);
   const initials = ((parts[0]?.[0] ?? '') + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
   let h = 0;
   for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  const hue = avatarHues[h % avatarHues.length];
   return (
     <span
-      className={cx('inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-white', className)}
-      style={{ width: size, height: size, fontSize: size * 0.38, background: `linear-gradient(135deg, hsl(${hue} 70% 52%), hsl(${hue + 25} 65% 40%))` }}
+      className={cx('inline-flex shrink-0 items-center justify-center rounded-full font-display text-[#faeeda] ring-1 ring-line', className)}
+      style={{ width: size, height: size, fontSize: size * 0.42, background: avatarColors[h % avatarColors.length] }}
       aria-hidden
     >
       {initials}
@@ -187,7 +190,7 @@ export function Avatar({ name, size = 32, className }: { name: string; size?: nu
 export function RoleBadges({ role, isMod, isDev }: { role: 'student' | 'teacher'; isMod: boolean; isDev: boolean }) {
   return (
     <>
-      {role === 'teacher' && <Chip tone="blue">Teacher</Chip>}
+      {role === 'teacher' && <Chip tone="navy">Teacher</Chip>}
       {isMod && <Chip tone="accent">Mod</Chip>}
       {isDev && <Chip tone="neutral">Dev</Chip>}
     </>

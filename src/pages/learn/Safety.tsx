@@ -20,11 +20,11 @@ export default function Safety() {
 
       <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
         <div className="overflow-hidden rounded-2xl border border-warn/40 bg-surface shadow-card">
-          <div className="hazard-stripe h-2.5" />
+          <div className="stripes stripes-tl stripes-sm mt-5" aria-hidden />
           <div className="p-5 sm:p-6">
             <div className="mb-3 flex items-center gap-2 text-warn">
               <ShieldCheck className="size-5" />
-              <span className="label-mono">Required for shop access</span>
+              <span className="label-caps">Required for shop access</span>
             </div>
             <h2 className="text-2xl font-bold">{safetyCheckpoint.title}</h2>
             <p className="mt-1.5 text-[0.9375rem] text-muted">{safetyCheckpoint.requirement}</p>
@@ -32,7 +32,7 @@ export default function Safety() {
               href={safetyCheckpoint.url}
               target="_blank"
               rel="noreferrer"
-              className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-accent px-4 font-semibold text-on-accent transition hover:brightness-110"
+              className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl bg-accent px-4 py-2.5 font-display uppercase leading-tight tracking-[0.06em] text-on-accent transition hover:brightness-105"
             >
               Open the checkpoint and practice material
               <ExternalLink className="size-4" />
@@ -89,7 +89,7 @@ export default function Safety() {
                     </td>
                     {ppeColumns.map((p) => (
                       <td key={p} className="text-center">
-                        {t.ppe.includes(p) && <span className="inline-block size-3 rounded-full bg-blue" aria-label="Required" />}
+                        {t.ppe.includes(p) && <span className="inline-block size-3 rounded-full bg-navy" aria-label="Required" />}
                       </td>
                     ))}
                     <td className="text-center">{t.noGloves && <span className="inline-block size-3 rotate-45 bg-danger" aria-label="No gloves" />}</td>
@@ -158,7 +158,7 @@ function RulesAccordion({ slug, name, rules }: { slug: string; name: string; rul
             </li>
           ))}
           <li className="pt-1">
-            <Link to={`/tools/${slug}`} className="text-sm text-blue hover:underline">
+            <Link to={`/tools/${slug}`} className="text-sm text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">
               Open the full entry
             </Link>
           </li>

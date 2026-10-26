@@ -33,7 +33,7 @@ export default function Practice() {
 
       {done ? (
         <Card className="animate-rise p-8 text-center">
-          <div className="font-mono text-6xl font-bold text-accent">
+          <div className="font-display text-7xl text-accent">
             {score}/{round.length}
           </div>
           <p className="mt-3 text-muted">{score === round.length ? 'All correct. The real checkpoint needs 100% too.' : 'Read the entries for the ones you missed, then try another round.'}</p>
@@ -42,7 +42,7 @@ export default function Practice() {
               <RotateCcw className="size-4" />
               New round
             </Button>
-            <a href={safetyCheckpoint.url} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-xl border border-line bg-surface px-4 font-medium hover:bg-raised">
+            <a href={safetyCheckpoint.url} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-xl border border-line bg-surface px-4 font-display uppercase tracking-[0.06em] hover:bg-raised">
               Official checkpoint <ExternalLink className="size-4" />
             </a>
           </div>
@@ -53,7 +53,7 @@ export default function Practice() {
             <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
               <motion.div className="h-full bg-accent" animate={{ width: `${(i / round.length) * 100}%` }} />
             </div>
-            <span className="font-mono text-xs text-muted">
+            <span className="font-display text-sm text-muted">
               {i + 1}/{round.length}
             </span>
           </div>
@@ -92,7 +92,7 @@ export default function Practice() {
 function Feedback({ ok, children }: { ok: boolean; children: React.ReactNode }) {
   return (
     <div className={cx('mt-4 flex gap-3 rounded-xl p-4 text-sm', ok ? 'bg-ok/10' : 'bg-danger/8')}>
-      <span className={cx('flex size-6 shrink-0 items-center justify-center rounded-full', ok ? 'bg-ok text-white' : 'bg-danger text-white')}>{ok ? <Check className="size-3.5" strokeWidth={3} /> : <X className="size-3.5" strokeWidth={3} />}</span>
+      <span className={cx('flex size-6 shrink-0 items-center justify-center rounded-full', ok ? 'bg-ok text-bg' : 'bg-danger text-bg')}>{ok ? <Check className="size-3.5" strokeWidth={3} /> : <X className="size-3.5" strokeWidth={3} />}</span>
       <div>
         <div className="font-semibold">{ok ? 'Correct' : 'Not quite'}</div>
         <div className="mt-0.5 text-muted">{children}</div>
@@ -117,10 +117,10 @@ function QuestionCard({ q, answered, onAnswer }: { q: Question; answered: boolea
 function ToolHeader({ slug, children }: { slug: string; children: React.ReactNode }) {
   return (
     <div className="mb-5 flex items-center gap-4">
-      <div className="bp-grid flex size-20 shrink-0 items-center justify-center rounded-2xl border border-line bg-bg/50 text-ink">
+      <div className="art-tile flex size-20 shrink-0 items-center justify-center rounded-2xl border border-line text-ink">
         <ToolArt slug={slug} className="size-16" />
       </div>
-      <h2 className="text-xl font-semibold leading-snug">{children}</h2>
+      <h2 className="font-sans text-xl font-semibold normal-case leading-snug tracking-normal">{children}</h2>
     </div>
   );
 }
@@ -144,7 +144,7 @@ function PpeQ({ q, answered, onAnswer }: { q: Extract<Question, { kind: 'ppe' }>
               onClick={() => toggle(p)}
               className={cx(
                 'flex items-center gap-2.5 rounded-xl border p-3 text-left text-sm font-medium transition',
-                answered === null ? (on ? 'border-accent bg-accent/8 ring-1 ring-accent' : 'border-line hover:border-blue/40') : right ? 'border-ok bg-ok/10' : on ? 'border-danger bg-danger/8' : 'border-line opacity-60',
+                answered === null ? (on ? 'border-accent bg-accent/8 ring-1 ring-accent' : 'border-line hover:border-navy/40') : right ? 'border-ok bg-ok/10' : on ? 'border-danger bg-danger/8' : 'border-line opacity-60',
               )}
             >
               <PpeIcon id={p} size={24} />
@@ -159,7 +159,7 @@ function PpeQ({ q, answered, onAnswer }: { q: Extract<Question, { kind: 'ppe' }>
         </Button>
       ) : (
         <Feedback ok={answered}>
-          The entry says: “{q.source}” <Link to={`/tools/${q.tool.slug}`} className="text-blue hover:underline">Open entry</Link>
+          The entry says: “{q.source}” <Link to={`/tools/${q.tool.slug}`} className="text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">Open entry</Link>
         </Feedback>
       )}
     </Card>
@@ -171,7 +171,7 @@ function WhichToolQ({ q, answered, onAnswer }: { q: Extract<Question, { kind: 'w
   const right = q.options.find((t) => t.slug === q.answer)!;
   return (
     <Card className="p-5 sm:p-6">
-      <h2 className="mb-5 text-xl font-semibold leading-snug">
+      <h2 className="mb-5 font-sans text-xl font-semibold normal-case leading-snug tracking-normal">
         Which tool is designed for: <span className="text-accent">“{q.prompt}”</span>?
       </h2>
       <div className="grid grid-cols-2 gap-2.5">
@@ -185,7 +185,7 @@ function WhichToolQ({ q, answered, onAnswer }: { q: Extract<Question, { kind: 'w
             }}
             className={cx(
               'flex flex-col items-center gap-1 rounded-xl border p-3 transition',
-              answered === null ? 'border-line hover:border-blue/40 hover:bg-raised' : t.slug === q.answer ? 'border-ok bg-ok/10' : picked === t.slug ? 'border-danger bg-danger/8' : 'border-line opacity-50',
+              answered === null ? 'border-line hover:border-navy/40 hover:bg-raised' : t.slug === q.answer ? 'border-ok bg-ok/10' : picked === t.slug ? 'border-danger bg-danger/8' : 'border-line opacity-50',
             )}
           >
             <ToolArt slug={t.slug} className="size-16 text-ink" />
@@ -195,7 +195,7 @@ function WhichToolQ({ q, answered, onAnswer }: { q: Extract<Question, { kind: 'w
       </div>
       {answered !== null && (
         <Feedback ok={answered}>
-          The {right.name.toLowerCase()} entry lists it under “Designed for”. <Link to={`/tools/${right.slug}`} className="text-blue hover:underline">Open entry</Link>
+          The {right.name.toLowerCase()} entry lists it under “Designed for”. <Link to={`/tools/${right.slug}`} className="text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">Open entry</Link>
         </Feedback>
       )}
     </Card>
@@ -225,12 +225,12 @@ function OrderQ({ q, answered, onAnswer }: { q: Extract<Question, { kind: 'order
               onClick={() => tap(s)}
               className={cx(
                 'flex w-full items-start gap-3 rounded-xl border p-3 text-left text-sm transition',
-                answered === null ? (n >= 0 ? 'border-accent bg-accent/8' : 'border-line hover:border-blue/40') : n === correctN ? 'border-ok bg-ok/10' : 'border-danger bg-danger/8',
+                answered === null ? (n >= 0 ? 'border-accent bg-accent/8' : 'border-line hover:border-navy/40') : n === correctN ? 'border-ok bg-ok/10' : 'border-danger bg-danger/8',
               )}
             >
-              <span className={cx('flex size-6 shrink-0 items-center justify-center rounded-md font-mono text-xs font-bold', n >= 0 ? 'bg-accent text-on-accent' : 'bg-raised text-muted')}>{n >= 0 ? n + 1 : '·'}</span>
+              <span className={cx('flex size-6 shrink-0 items-center justify-center rounded-md font-display text-sm', n >= 0 ? 'bg-accent text-on-accent' : 'bg-raised text-muted')}>{n >= 0 ? n + 1 : '·'}</span>
               <span className="pt-0.5">{s}</span>
-              {answered !== null && n !== correctN && <span className="ml-auto shrink-0 font-mono text-xs text-ok">#{correctN + 1}</span>}
+              {answered !== null && n !== correctN && <span className="ml-auto shrink-0 font-display text-sm text-ok">#{correctN + 1}</span>}
             </button>
           );
         })}
@@ -241,7 +241,7 @@ function OrderQ({ q, answered, onAnswer }: { q: Extract<Question, { kind: 'order
         </Button>
       ) : (
         <Feedback ok={answered}>
-          These steps are in this order in the {q.tool.name.toLowerCase()} entry. <Link to={`/tools/${q.tool.slug}`} className="text-blue hover:underline">Open entry</Link>
+          These steps are in this order in the {q.tool.name.toLowerCase()} entry. <Link to={`/tools/${q.tool.slug}`} className="text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">Open entry</Link>
         </Feedback>
       )}
     </Card>
@@ -264,7 +264,7 @@ function GlovesQ({ q, answered, onAnswer }: { q: Extract<Question, { kind: 'glov
             }}
             className={cx(
               'rounded-xl border p-4 text-lg font-semibold transition',
-              answered === null ? 'border-line hover:border-blue/40 hover:bg-raised' : v === q.answer ? 'border-ok bg-ok/10' : picked === v ? 'border-danger bg-danger/8' : 'border-line opacity-50',
+              answered === null ? 'border-line hover:border-navy/40 hover:bg-raised' : v === q.answer ? 'border-ok bg-ok/10' : picked === v ? 'border-danger bg-danger/8' : 'border-line opacity-50',
             )}
           >
             {v ? 'Yes, wear gloves' : 'No gloves'}
@@ -273,7 +273,7 @@ function GlovesQ({ q, answered, onAnswer }: { q: Extract<Question, { kind: 'glov
       </div>
       {answered !== null && (
         <Feedback ok={answered}>
-          The entry says: “{q.source}” <Link to={`/tools/${q.tool.slug}`} className="text-blue hover:underline">Open entry</Link>
+          The entry says: “{q.source}” <Link to={`/tools/${q.tool.slug}`} className="text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">Open entry</Link>
         </Feedback>
       )}
     </Card>

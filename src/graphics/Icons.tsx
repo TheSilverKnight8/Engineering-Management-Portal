@@ -202,14 +202,13 @@ export function ObjectiveIcon({ id, size = 24, className = '' }: { id: Objective
   );
 }
 
-/** The app mark: a hex nut on a blueprint tile. */
+/** The app mark: a red hex nut on a navy tile, in the Shop Manual colors. */
 export function AppMark({ size = 32, className = '' }: { size?: number; className?: string }) {
   return (
     <svg viewBox="0 0 64 64" width={size} height={size} className={className} aria-hidden>
-      <rect width="64" height="64" rx="15" fill="#0f1b30" />
-      <path d="M0 16h64M0 32h64M0 48h64M16 0v64M32 0v64M48 0v64" stroke="#5ea9ff" strokeOpacity=".14" strokeWidth="1" />
-      <path d="M52 32L42 49.3H22L12 32l10-17.3h20z" fill="none" stroke="#ff7a2b" strokeWidth="5" strokeLinejoin="round" />
-      <circle cx="32" cy="32" r="8.5" fill="none" stroke="#e6ebf4" strokeWidth="4" />
+      <rect width="64" height="64" rx="12" fill="#002657" />
+      <path d="M52 32L42 49.3H22L12 32l10-17.3h20z" fill="none" stroke="#fc3f3f" strokeWidth="5.5" strokeLinejoin="round" />
+      <circle cx="32" cy="32" r="8.5" fill="none" stroke="#faeeda" strokeWidth="4.5" />
     </svg>
   );
 }

@@ -112,7 +112,7 @@ export function PostComposer({ open, onClose }: { open: boolean; onClose: () => 
                 key={k}
                 type="button"
                 onClick={() => setKind(k)}
-                className={cx('flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition', on ? 'border-accent bg-accent/8 ring-1 ring-accent' : 'border-line hover:border-blue/40')}
+                className={cx('flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition', on ? 'border-accent bg-accent/8 ring-1 ring-accent' : 'border-line hover:border-navy/40')}
               >
                 <span className={cx('flex size-9 items-center justify-center rounded-lg', m.tone)}>
                   <m.icon className="size-[1.1rem]" />
@@ -164,7 +164,7 @@ export function PostComposer({ open, onClose }: { open: boolean; onClose: () => 
               </div>
             ))}
             {images.length < MAX_IMAGES && (
-              <button type="button" onClick={() => fileInput.current?.click()} className="flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-line text-muted hover:border-blue/40 hover:text-ink">
+              <button type="button" onClick={() => fileInput.current?.click()} className="flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-line text-muted hover:border-navy/40 hover:text-ink">
                 <ImagePlus className="size-5" />
                 <span className="text-xs">Add</span>
               </button>

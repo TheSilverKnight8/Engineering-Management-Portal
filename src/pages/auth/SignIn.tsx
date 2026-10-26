@@ -47,10 +47,10 @@ export default function SignIn() {
     return (
       <AuthLayout>
         <div className="animate-rise text-center">
-          <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-2xl bg-blue/10 text-blue">
+          <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-2xl bg-navy/10 text-navy">
             <MailCheck className="size-7" />
           </div>
-          <h1 className="text-2xl font-bold">Check your email</h1>
+          <h1 className="text-[2.5rem] leading-[0.95]">Check your email</h1>
           <p className="mt-2 text-[0.9375rem] text-muted">
             {sent === 'confirm' ? 'Open the link we sent to confirm your account, then come back here.' : 'Open the link we sent to set a new password.'}
             <br />
@@ -67,7 +67,7 @@ export default function SignIn() {
   return (
     <AuthLayout>
       <div className="animate-rise">
-        <h1 className="text-[1.75rem] font-bold leading-tight">{mode === 'sign-in' ? 'Welcome back' : mode === 'sign-up' ? 'Create your account' : 'Reset your password'}</h1>
+        <h1 className="text-[2.5rem] leading-[0.95]">{mode === 'sign-in' ? 'Welcome back' : mode === 'sign-up' ? 'Create your account' : 'Reset your password'}</h1>
         <p className="mt-1.5 text-[0.9375rem] text-muted">
           {mode === 'reset' ? 'We will email you a link to set a new password.' : 'Use a personal email address, not your school account.'}
         </p>
@@ -109,12 +109,12 @@ export default function SignIn() {
 
         <div className="mt-5 text-center text-sm">
           {mode === 'sign-in' && (
-            <button className="text-blue hover:underline" onClick={() => { setMode('reset'); setError(null); }}>
+            <button className="text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent" onClick={() => { setMode('reset'); setError(null); }}>
               Forgot your password?
             </button>
           )}
           {mode === 'reset' && (
-            <button className="text-blue hover:underline" onClick={() => { setMode('sign-in'); setError(null); }}>
+            <button className="text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent" onClick={() => { setMode('sign-in'); setError(null); }}>
               Back to sign in
             </button>
           )}

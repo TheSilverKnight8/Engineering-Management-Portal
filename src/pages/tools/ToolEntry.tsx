@@ -32,15 +32,15 @@ export default function ToolEntry() {
       {/* Hero */}
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-8">
         <div className="overflow-hidden rounded-3xl border border-line bg-surface shadow-card">
-          <div className="grid sm:grid-cols-[14rem_1fr]">
-            <div className="bp-grid flex items-center justify-center border-b border-line bg-bg/50 p-6 text-ink sm:border-b-0 sm:border-r">
+          <div className="grid h-full sm:grid-cols-[14rem_1fr]">
+            <div className="art-tile flex items-center justify-center border-b border-line p-6 text-ink sm:border-b-0 sm:border-r">
               <ToolArt slug={tool.slug} title={tool.name} className="w-40 sm:w-full" />
             </div>
             <div className="p-5 sm:p-7">
-              <div className="label-mono mb-2 text-accent">
+              <div className="label-caps mb-2 text-accent">
                 {categoryLabels[tool.category]} · {tool.form}
               </div>
-              <h1 className="text-[2rem] font-bold leading-tight sm:text-[2.5rem]">{tool.name}</h1>
+              <h1 className="text-[2.5rem] leading-[0.95] sm:text-[3.25rem]">{tool.name}</h1>
               <p className="mt-3 text-[1.0625rem] leading-relaxed text-muted">{tool.summary}</p>
               <div className="mt-5">
                 <div className="mb-2 text-sm font-medium">Before you start, put on</div>
@@ -99,8 +99,8 @@ export default function ToolEntry() {
           </section>
 
           <section className="overflow-hidden rounded-2xl border border-warn/40 bg-surface">
-            <div className="hazard-stripe h-2" />
-            <div className="bg-warn/[0.07] p-5 sm:p-6">
+            <div className="stripes stripes-tl stripes-sm mt-4" aria-hidden />
+            <div className="p-5 pt-4 sm:p-6 sm:pt-4">
               <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
                 <ShieldAlert className="size-5 text-warn" />
                 Safety
@@ -127,12 +127,12 @@ export default function ToolEntry() {
             <ol className="relative space-y-3">
               {tool.operation.map((s, i) => (
                 <li key={i} className="flex gap-4 rounded-2xl border border-line bg-surface p-4 shadow-card">
-                  <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-raised font-mono text-sm font-semibold text-accent">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-raised font-display text-base text-accent">{String(i + 1).padStart(2, '0')}</span>
                   <span className="pt-1 text-[0.9375rem] leading-relaxed">{s}</span>
                 </li>
               ))}
             </ol>
-            <p className="mt-4 text-xs text-muted">Written in ASD-STE100 Simplified Technical English. <Link to="/learn/ste" className="text-blue hover:underline">What is STE?</Link></p>
+            <p className="mt-4 text-xs text-muted">Written in ASD-STE100 Simplified Technical English. <Link to="/learn/ste" className="text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">What is STE?</Link></p>
           </section>
 
           {tool.graphics.length > 0 && (
@@ -165,13 +165,13 @@ function AtAGlance({ tool }: { tool: Tool }) {
   const size = [p.maxLength !== null && `${formatInches(p.maxLength)} long`, p.maxWidth !== null && `${formatInches(p.maxWidth)} wide`].filter(Boolean).join(' × ');
   return (
     <Card className="p-5">
-      <div className="label-mono mb-4 text-muted">At a glance</div>
+      <div className="label-caps mb-4 text-muted">At a glance</div>
       <dl className="space-y-4 text-sm">
         <div>
           <dt className="mb-1.5 text-muted">Materials</dt>
           <dd className="flex flex-wrap gap-1.5">
             {p.materials.map((m) => (
-              <Link key={m} to={`/learn/materials/${m}`} className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-raised py-1 pl-1 pr-2.5 font-medium hover:border-blue/40">
+              <Link key={m} to={`/learn/materials/${m}`} className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-raised py-1 pl-1 pr-2.5 font-medium hover:border-navy/40">
                 <MaterialIcon id={m} size={22} />
                 {materialById[m].name}
               </Link>
@@ -194,7 +194,7 @@ function AtAGlance({ tool }: { tool: Tool }) {
           <dd className="flex items-center gap-2 font-medium">
             <span className="flex gap-0.5">
               {[1, 2, 3].map((n) => (
-                <span key={n} className={cx('h-3 w-2 rounded-sm', n <= p.precision ? 'bg-blue' : 'bg-line')} />
+                <span key={n} className={cx('h-3 w-2 rounded-sm', n <= p.precision ? 'bg-navy' : 'bg-line')} />
               ))}
             </span>
             {precisionLabels[p.precision]}
@@ -202,11 +202,11 @@ function AtAGlance({ tool }: { tool: Tool }) {
         </div>
         <div className="flex items-center justify-between">
           <dt className="text-muted">Max thickness</dt>
-          <dd className="font-mono font-medium">{p.maxThickness === null ? 'Any' : formatInches(p.maxThickness)}</dd>
+          <dd className="font-display tracking-wide">{p.maxThickness === null ? 'Any' : formatInches(p.maxThickness)}</dd>
         </div>
         <div className="flex items-center justify-between gap-4">
           <dt className="text-muted">Max size</dt>
-          <dd className="text-right font-mono font-medium">{size || 'Any'}</dd>
+          <dd className="text-right font-display tracking-wide">{size || 'Any'}</dd>
         </div>
       </dl>
     </Card>
@@ -225,7 +225,7 @@ function InTheShop({ tool }: { tool: Tool }) {
 
   return (
     <Card className="p-5">
-      <div className="label-mono mb-4 text-muted">In the shop</div>
+      <div className="label-caps mb-4 text-muted">In the shop</div>
       {inventory.isLoading ? (
         <div className="h-16 animate-pulse rounded-xl bg-raised" />
       ) : units.length === 0 ? (
@@ -240,7 +240,7 @@ function InTheShop({ tool }: { tool: Tool }) {
         <ul className="space-y-2">
           {units.map((u) => (
             <li key={u.id}>
-              <Link to={`/shop/${u.id}`} className="block rounded-xl border border-line p-3 transition hover:border-blue/40 hover:bg-raised">
+              <Link to={`/shop/${u.id}`} className="block rounded-xl border border-line p-3 transition hover:border-navy/40 hover:bg-raised">
                 <div className="mb-1 flex items-center justify-between gap-2">
                   <span className="truncate font-medium">{u.name}</span>
                   <ChevronRight className="size-4 shrink-0 text-muted" />

@@ -47,7 +47,7 @@ export default function ProjectEntry() {
               <ol className="space-y-3">
                 {p.steps.map((s, i) => (
                   <li key={i} className="flex gap-4 rounded-2xl border border-line bg-surface p-4">
-                    <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-raised font-mono text-sm font-semibold text-accent">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-raised font-display text-base text-accent">{String(i + 1).padStart(2, '0')}</span>
                     <span className="pt-1">{s}</span>
                   </li>
                 ))}
@@ -57,8 +57,8 @@ export default function ProjectEntry() {
 
           {p.safety.length > 0 && (
             <section className="overflow-hidden rounded-2xl border border-warn/40 bg-surface">
-              <div className="hazard-stripe h-2" />
-              <div className="bg-warn/[0.07] p-5">
+              <div className="stripes stripes-tl stripes-sm mt-4" aria-hidden />
+              <div className="p-5 pt-4">
                 <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">
                   <ShieldAlert className="size-5 text-warn" />
                   Safety
@@ -78,7 +78,7 @@ export default function ProjectEntry() {
 
         <aside className="space-y-4">
           <Card className="p-5">
-            <div className="label-mono mb-3 text-muted">Materials</div>
+            <div className="label-caps mb-3 text-muted">Materials</div>
             <div className="flex flex-wrap gap-2">
               {p.materials.map((m) => (
                 <Chip key={m} icon={<MaterialIcon id={m} size={18} />}>
@@ -89,7 +89,7 @@ export default function ProjectEntry() {
           </Card>
           {ts.length > 0 && (
             <Card className="p-5">
-              <div className="label-mono mb-3 text-muted">Tools</div>
+              <div className="label-caps mb-3 text-muted">Tools</div>
               <div className="space-y-1.5">
                 {ts.map((t) => (
                   <Link key={t.slug} to={`/tools/${t.slug}`} className="flex items-center gap-2.5 rounded-lg p-1.5 text-sm font-medium hover:bg-raised">

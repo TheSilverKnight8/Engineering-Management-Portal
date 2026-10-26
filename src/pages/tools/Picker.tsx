@@ -105,7 +105,7 @@ export default function Picker() {
                     title={off ? 'No tool does this with the chosen material' : o.hint}
                     className={cx(
                       'flex items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left transition',
-                      on ? 'border-accent bg-accent/8 ring-1 ring-accent' : 'border-line bg-surface hover:border-blue/40',
+                      on ? 'border-accent bg-accent/8 ring-1 ring-accent' : 'border-line bg-surface hover:border-navy/40',
                       off && 'opacity-35',
                     )}
                   >
@@ -114,7 +114,7 @@ export default function Picker() {
                       <span className="block text-sm font-medium leading-tight">{o.label}</span>
                       {o.hint && <span className="block truncate text-[0.6875rem] text-muted">{o.hint}</span>}
                     </span>
-                    <span className="font-mono text-[0.6875rem] text-muted">{count}</span>
+                    <span className="font-display text-sm text-muted">{count}</span>
                   </button>
                 );
               })}
@@ -129,7 +129,7 @@ export default function Picker() {
                   <Tile key={p} on={on} onClick={() => set('p', on ? undefined : String(p))}>
                     <span className="flex h-7 items-end gap-1">
                       {[1, 2, 3].map((n) => (
-                        <span key={n} className={cx('w-2.5 rounded-sm transition', n <= p ? (on ? 'bg-accent' : 'bg-blue') : 'bg-line')} style={{ height: 8 + n * 6 }} />
+                        <span key={n} className={cx('w-2.5 rounded-sm transition', n <= p ? (on ? 'bg-accent' : 'bg-navy') : 'bg-line')} style={{ height: 8 + n * 6 }} />
                       ))}
                     </span>
                     <span className="text-sm font-semibold">{precisionLabels[p]}</span>
@@ -174,7 +174,7 @@ function Question({ n, title, done, hint, children }: { n: number; title: string
   return (
     <Card className="p-4 sm:p-5">
       <div className="mb-3.5 flex items-center gap-3">
-        <span className={cx('flex size-7 items-center justify-center rounded-full font-mono text-xs font-bold transition', done ? 'bg-accent text-on-accent' : 'bg-raised text-muted')}>
+        <span className={cx('flex size-7 items-center justify-center rounded-full font-display text-sm transition', done ? 'bg-accent text-on-accent' : 'bg-raised text-muted')}>
           {done ? <Check className="size-4" strokeWidth={3} /> : n}
         </span>
         <div>
@@ -194,7 +194,7 @@ function Tile({ on, onClick, children }: { on: boolean; onClick: () => void; chi
       aria-pressed={on}
       className={cx(
         'relative flex flex-col items-center gap-1 rounded-xl border px-2 py-3 transition',
-        on ? 'border-accent bg-accent/8 ring-1 ring-accent' : 'border-line bg-surface hover:border-blue/40 hover:bg-raised',
+        on ? 'border-accent bg-accent/8 ring-1 ring-accent' : 'border-line bg-surface hover:border-navy/40 hover:bg-raised',
       )}
     >
       {on && (
@@ -229,7 +229,7 @@ function SizeInput({ label, value, onChange }: { label: string; value: string; o
         }}
         className={cx(
           'h-11 w-full rounded-xl border bg-raised px-3 font-mono text-[0.9375rem] outline-none transition focus:bg-surface focus:ring-3',
-          bad ? 'border-danger focus:ring-danger/15' : 'border-line focus:border-blue focus:ring-blue/15',
+          bad ? 'border-danger focus:ring-danger/15' : 'border-line focus:border-navy focus:ring-navy/15',
         )}
       />
       <span className={cx('mt-1 block h-4 font-mono text-[0.6875rem]', bad ? 'text-danger' : 'text-muted')}>
@@ -251,7 +251,7 @@ function Results({ input, results, any }: { input: PickerInput; results: ReturnT
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {results.matches.map((e) => (
-            <Link key={e.tool.slug} to={`/tools/${e.tool.slug}`} className="group flex items-center gap-3 rounded-xl border border-line bg-surface p-3 transition hover:border-blue/40">
+            <Link key={e.tool.slug} to={`/tools/${e.tool.slug}`} className="group flex items-center gap-3 rounded-xl border border-line bg-surface p-3 transition hover:border-navy/40">
               <ToolArt slug={e.tool.slug} className="size-12 shrink-0 text-ink transition group-hover:scale-105" />
               <span className="text-sm font-medium leading-tight">{e.tool.name}</span>
             </Link>
@@ -341,11 +341,11 @@ function ResultCard({ e, compact }: { e: Evaluated; compact?: boolean }) {
       <Link
         to={`/tools/${e.tool.slug}`}
         className={cx(
-          'group flex items-center gap-4 rounded-2xl border bg-surface transition hover:border-blue/40',
+          'group flex items-center gap-4 rounded-2xl border bg-surface transition hover:border-navy/40',
           compact ? 'border-line/80 p-3 opacity-90' : 'border-line p-4 shadow-card',
         )}
       >
-        <div className={cx('bp-grid flex shrink-0 items-center justify-center rounded-xl border border-line bg-bg/50 text-ink', compact ? 'size-14' : 'size-20 sm:size-24')}>
+        <div className={cx('art-tile flex shrink-0 items-center justify-center rounded-xl border border-line text-ink', compact ? 'size-14' : 'size-20 sm:size-24')}>
           <ToolArt slug={e.tool.slug} className={cx('transition group-hover:scale-105', compact ? 'size-11' : 'size-16 sm:size-20')} />
         </div>
         <div className="min-w-0 flex-1">

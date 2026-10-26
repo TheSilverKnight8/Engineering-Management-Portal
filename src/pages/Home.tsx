@@ -30,8 +30,8 @@ export default function Home() {
   return (
     <div className="space-y-8">
       <header className="animate-rise">
-        <div className="label-mono mb-2 text-muted">{dateLine.format(new Date())}</div>
-        <h1 className="text-[1.875rem] font-bold leading-tight sm:text-[2.5rem]">{first ? `${greeting()}, ${first}.` : `${greeting()}.`}</h1>
+        <div className="label-caps mb-2.5 text-accent">{dateLine.format(new Date())}</div>
+        <h1 className="text-[2.75rem] leading-[0.95] sm:text-[4rem]">{first ? `${greeting()}, ${first}.` : `${greeting()}.`}</h1>
       </header>
 
       <QuickActions />
@@ -58,8 +58,8 @@ export default function Home() {
 function QuickActions() {
   const actions = [
     { to: '/picker', title: 'Find a tool', body: 'Answer a few questions', icon: Sparkles, tone: 'bg-accent text-on-accent' },
-    { to: '/shop', title: 'Check out a tool', body: 'See who has what', icon: Warehouse, tone: 'bg-blue text-white' },
-    { to: '/learn/safety', title: 'Safety', body: 'PPE, rules, practice', icon: ShieldCheck, tone: 'bg-warn text-[#1d1300]' },
+    { to: '/shop', title: 'Check out a tool', body: 'See who has what', icon: Warehouse, tone: 'bg-ink text-bg' },
+    { to: '/learn/safety', title: 'Safety', body: 'PPE, rules, practice', icon: ShieldCheck, tone: 'bg-accent text-on-accent' },
     { to: '/tools', title: 'Tool library', body: 'How to operate each tool', icon: Hammer, tone: 'bg-ink text-bg' },
   ];
   return (
@@ -106,7 +106,7 @@ function MyCheckouts() {
 
   return (
     <section>
-      <SectionTitle action={<Link to="/shop" className="text-sm text-blue hover:underline">Shop</Link>}>Your checkouts</SectionTitle>
+      <SectionTitle action={<Link to="/shop" className="text-sm text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">Shop</Link>}>Your checkouts</SectionTitle>
       {mine.length === 0 ? (
         <Card className="flex items-center gap-4 p-5">
           <div className="flex size-11 items-center justify-center rounded-xl bg-raised text-muted">
@@ -124,7 +124,7 @@ function MyCheckouts() {
             const state = checkoutState(c);
             return (
               <Card key={c.id} className="flex items-center gap-4 p-4">
-                <div className="bp-grid flex size-14 shrink-0 items-center justify-center rounded-xl border border-line bg-bg/50 text-ink">
+                <div className="art-tile flex size-14 shrink-0 items-center justify-center rounded-xl border border-line text-ink">
                   <ToolArt slug={item?.tool_slug ?? ''} className="size-11" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -133,7 +133,7 @@ function MyCheckouts() {
                   </Link>
                   <div className="text-sm text-muted">{formatWindow(c.starts_at, c.ends_at)}</div>
                   <div className="mt-1">
-                    {state === 'active' ? <Chip tone="accent">Checked out now</Chip> : <Chip tone="blue">Upcoming</Chip>}
+                    {state === 'active' ? <Chip tone="accent">Checked out now</Chip> : <Chip tone="navy">Upcoming</Chip>}
                     {c.borrower !== profile?.full_name && <span className="ml-2 text-xs text-muted">for {c.borrower}</span>}
                   </div>
                 </div>
@@ -169,7 +169,7 @@ function ShopStatus() {
         <div className="grid grid-cols-3 divide-x divide-line">
           {stats.map((s) => (
             <div key={s.label} className="p-4 sm:p-5">
-              <div className={cx('font-mono text-[1.75rem] font-bold leading-none sm:text-4xl', s.tone)}>{inventory.isLoading ? '–' : s.value}</div>
+              <div className={cx('font-display text-[2.25rem] leading-none sm:text-5xl', s.tone)}>{inventory.isLoading ? '–' : s.value}</div>
               <div className="mt-1.5 text-xs text-muted sm:text-sm">{s.label}</div>
             </div>
           ))}
@@ -193,7 +193,7 @@ function ShopStatus() {
         )}
         {items.length === 0 && !inventory.isLoading && (
           <div className="border-t border-line p-4 text-sm text-muted">
-            The inventory is empty. <Link to="/shop" className="text-blue hover:underline">Add the shop’s tools</Link>.
+            The inventory is empty. <Link to="/shop" className="text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">Add the shop’s tools</Link>.
           </div>
         )}
       </Card>
@@ -207,7 +207,7 @@ function LatestPosts() {
   const latest = (posts.data ?? []).filter((p) => !p.removed_at).slice(0, 3);
   return (
     <section>
-      <SectionTitle action={<Link to="/community" className="text-sm text-blue hover:underline">All posts</Link>}>Latest posts</SectionTitle>
+      <SectionTitle action={<Link to="/community" className="text-sm text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">All posts</Link>}>Latest posts</SectionTitle>
       <Card className="divide-y divide-line">
         {latest.length === 0 && (
           <div className="flex items-center gap-3 p-4 text-sm text-muted">
@@ -242,7 +242,7 @@ function MyGroups() {
   const mine = (groups.data ?? []).filter((g) => (members.data ?? []).some((m) => m.group_id === g.id && m.user_id === profile?.id));
   return (
     <section>
-      <SectionTitle action={<Link to="/groups" className="text-sm text-blue hover:underline">All groups</Link>}>Your groups</SectionTitle>
+      <SectionTitle action={<Link to="/groups" className="text-sm text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">All groups</Link>}>Your groups</SectionTitle>
       <Card className="divide-y divide-line">
         {mine.length === 0 && (
           <div className="flex items-center gap-3 p-4 text-sm text-muted">
@@ -265,7 +265,7 @@ function RecentShopChanges() {
   if (!log.data?.length) return null;
   return (
     <section>
-      <SectionTitle action={<Link to="/shop/log" className="text-sm text-blue hover:underline">Changelog</Link>}>Recent shop changes</SectionTitle>
+      <SectionTitle action={<Link to="/shop/log" className="text-sm text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">Changelog</Link>}>Recent shop changes</SectionTitle>
       <Card className="divide-y divide-line">
         {log.data.map((e) => (
           <div key={e.id} className="p-3.5 text-sm">
@@ -287,15 +287,15 @@ function ToolStrip() {
           <div className="font-semibold">{safetyCheckpoint.title}</div>
           <div className="text-sm text-muted">{safetyCheckpoint.requirement}</div>
         </div>
-        <a href={safetyCheckpoint.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-blue hover:underline">
+        <a href={safetyCheckpoint.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">
           Open the checkpoint <ExternalLink className="size-4" />
         </a>
       </Card>
       <div>
-        <SectionTitle action={<Link to="/tools" className="text-sm text-blue hover:underline">All tools</Link>}>Tools in the shop</SectionTitle>
+        <SectionTitle action={<Link to="/tools" className="text-sm text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">All tools</Link>}>Tools in the shop</SectionTitle>
         <div className="scrollbar-none -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
           {tools.map((t) => (
-            <Link key={t.slug} to={`/tools/${t.slug}`} className="group w-32 shrink-0 rounded-2xl border border-line bg-surface p-3 text-center transition hover:border-blue/40">
+            <Link key={t.slug} to={`/tools/${t.slug}`} className="group w-32 shrink-0 rounded-2xl border border-line bg-surface p-3 text-center transition hover:border-navy/40">
               <ToolArt slug={t.slug} className="mx-auto size-20 text-ink transition group-hover:scale-105" />
               <div className="mt-1 text-sm font-medium leading-tight">{t.name}</div>
             </Link>

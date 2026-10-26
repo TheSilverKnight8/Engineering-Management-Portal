@@ -69,7 +69,7 @@ export default function GroupChannel() {
   if (!group) return <NotFound what="group" />;
 
   return (
-    <div className="-mb-[calc(6.5rem+env(safe-area-inset-bottom))] flex h-[calc(100dvh-3.5rem-env(safe-area-inset-top)-4rem-env(safe-area-inset-bottom)-1.25rem)] flex-col lg:-mb-16 lg:h-[calc(100dvh-2.5rem)]">
+    <div className="flex h-[calc(100dvh-3.5rem-env(safe-area-inset-top)-4rem-env(safe-area-inset-bottom)-1.25rem)] flex-col lg:h-[calc(100dvh-2rem)]">
       <div className="flex shrink-0 items-center gap-3 border-b border-line pb-3">
         <Link to="/groups" className="-ml-1 rounded-full p-1.5 text-muted hover:bg-raised hover:text-ink" aria-label="Back to groups">
           <ChevronLeft className="size-5" />
@@ -93,7 +93,7 @@ export default function GroupChannel() {
 
       {!isMember && !isMod ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
-          <div className="flex size-14 items-center justify-center rounded-2xl bg-blue/10 text-blue">
+          <div className="flex size-14 items-center justify-center rounded-2xl bg-navy/10 text-navy">
             <Users className="size-7" />
           </div>
           <div>
@@ -107,7 +107,7 @@ export default function GroupChannel() {
       ) : (
         <>
           {!isMember && isMod && (
-            <div className="mt-3 shrink-0 rounded-xl bg-blue/8 px-3 py-2 text-xs text-blue">You are viewing this channel as a moderator. You are not a member.</div>
+            <div className="mt-3 shrink-0 rounded-xl bg-navy/8 px-3 py-2 text-xs text-navy">You are viewing this channel as a moderator. You are not a member.</div>
           )}
           <MessageList
             messages={messages.data ?? []}
@@ -243,7 +243,7 @@ function MessageList({ messages, loading, meId, isMod, name, groupId, onReport }
             {newDay && (
               <div className="my-4 flex items-center gap-3">
                 <div className="h-px flex-1 bg-line" />
-                <span className="label-mono text-muted">{dayLabel(new Date(m.created_at))}</span>
+                <span className="label-caps text-muted">{dayLabel(new Date(m.created_at))}</span>
                 <div className="h-px flex-1 bg-line" />
               </div>
             )}
@@ -328,7 +328,7 @@ function Composer({ groupId }: { groupId: string }) {
 
   return (
     <form onSubmit={submit} className="shrink-0 border-t border-line py-3">
-      <div className="flex items-end gap-2 rounded-2xl border border-line bg-surface p-1.5 focus-within:border-blue focus-within:ring-3 focus-within:ring-blue/15">
+      <div className="flex items-end gap-2 rounded-2xl border border-line bg-surface p-1.5 focus-within:border-navy focus-within:ring-3 focus-within:ring-navy/15">
         <textarea
           ref={area}
           rows={1}

@@ -35,7 +35,7 @@ export function JoinCodeCard() {
         <h2 className="font-semibold">Class join code</h2>
       </div>
       <div className="flex flex-wrap items-center gap-3">
-        <div className="bp-grid rounded-xl border border-line bg-raised px-5 py-3 font-mono text-3xl font-bold tracking-[0.25em]">{code.data ?? '······'}</div>
+        <div className="rounded-xl border border-line bg-raised px-5 py-3 font-mono text-3xl font-bold tracking-[0.25em]">{code.data ?? '······'}</div>
         <Button
           size="sm"
           onClick={() => {

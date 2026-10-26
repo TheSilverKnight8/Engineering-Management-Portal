@@ -143,7 +143,7 @@ export function SearchPalette({ open, onClose }: { open: boolean; onClose: () =>
                         <span className="block truncate text-sm font-medium">{r.title}</span>
                         <span className="block truncate text-xs text-muted">{r.subtitle}</span>
                       </span>
-                      <span className="label-mono text-muted">{r.kind}</span>
+                      <span className="label-caps text-muted">{r.kind}</span>
                       {i === sel && <CornerDownLeft className="hidden size-4 text-muted sm:block" />}
                     </button>
                   </li>

@@ -57,7 +57,7 @@ export function StepMode({ open, onClose, tool }: { open: boolean; onClose: () =
             <motion.div className="h-full bg-accent" animate={{ width: `${((i + 1) / steps.length) * 100}%` }} />
           </div>
 
-          <div className="bp-grid flex flex-1 items-center justify-center overflow-hidden px-6">
+          <div className="flex flex-1 items-center justify-center overflow-hidden px-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={i}
@@ -68,8 +68,8 @@ export function StepMode({ open, onClose, tool }: { open: boolean; onClose: () =
                 className="max-w-2xl text-center"
                 onClick={() => !last && setI(i + 1)}
               >
-                <div className="mb-6 font-mono text-6xl font-bold text-accent/90">{String(i + 1).padStart(2, '0')}</div>
-                <p className="text-[1.75rem] font-semibold leading-snug sm:text-4xl" style={{ fontStretch: '105%' }}>
+                <div className="mb-6 font-display text-7xl text-accent">{String(i + 1).padStart(2, '0')}</div>
+                <p className="text-[1.75rem] font-semibold leading-snug sm:text-4xl">
                   {steps[i]}
                 </p>
               </motion.div>

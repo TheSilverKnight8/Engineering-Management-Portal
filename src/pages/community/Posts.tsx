@@ -151,7 +151,7 @@ function PostCard({ post, onReport, onView }: { post: Post; onReport: () => void
           </span>
         </div>
 
-        <h2 className="text-lg font-semibold leading-snug">{post.title}</h2>
+        <h2 className="font-sans text-lg font-semibold normal-case leading-snug tracking-normal">{post.title}</h2>
         {post.deadline && (
           <div className="mt-2">
             <Chip tone={deadlinePassed ? 'neutral' : 'warn'} icon={<CalendarDays className="size-3.5" />}>
@@ -163,15 +163,15 @@ function PostCard({ post, onReport, onView }: { post: Post; onReport: () => void
           <p className={cx('mt-2 whitespace-pre-wrap text-[0.9375rem] leading-relaxed text-ink/90', !expanded && longBody && 'line-clamp-4')}>{post.body}</p>
         )}
         {longBody && (
-          <button onClick={() => setExpanded((e) => !e)} className="mt-1 text-sm font-medium text-blue">
+          <button onClick={() => setExpanded((e) => !e)} className="mt-1 text-sm font-medium text-navy">
             {expanded ? 'Show less' : 'Show more'}
           </button>
         )}
 
         {post.link_url && (
-          <a href={post.link_url} target="_blank" rel="noreferrer noopener" className="mt-3 flex items-center gap-3 rounded-xl border border-line bg-raised p-3 transition hover:border-blue/40">
+          <a href={post.link_url} target="_blank" rel="noreferrer noopener" className="mt-3 flex items-center gap-3 rounded-xl border border-line bg-raised p-3 transition hover:border-navy/40">
             <ExternalLink className="size-4 shrink-0 text-muted" />
-            <span className="min-w-0 flex-1 truncate text-sm font-medium text-blue">{host || post.link_url}</span>
+            <span className="min-w-0 flex-1 truncate text-sm font-medium text-navy">{host || post.link_url}</span>
           </a>
         )}
 

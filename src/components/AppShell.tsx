@@ -93,14 +93,17 @@ export function AppShell({ children }: { children: ReactNode }) {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  // A group channel fills the screen like a chat app, so it skips the page stripes.
+  const immersive = /^\/groups\/[^/]+$/.test(pathname);
+
   return (
-    <div className="min-h-dvh lg:pl-[17rem]">
+    <div className="flex min-h-dvh flex-col lg:pl-[17rem]">
       {/* Computer: sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[17rem] flex-col border-r border-line bg-surface lg:flex">
         <Link to="/" className="flex items-center gap-3 px-5 pb-4 pt-5">
           <AppMark size={38} />
           <div className="leading-tight">
-            <div className="font-semibold" style={{ fontStretch: '115%' }}>
+            <div className="font-display text-xl uppercase leading-none tracking-wide">
               {APP_NAME}
             </div>
             <div className="text-xs text-muted">
@@ -127,8 +130,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                   to={s.to}
                   end={s.to === '/'}
                   className={cx(
-                    'flex items-center gap-3 rounded-xl px-3 py-2 text-[0.9375rem] font-medium transition',
-                    active ? 'bg-accent/10 text-accent' : 'text-ink hover:bg-raised',
+                    'flex items-center gap-3 rounded-xl px-3 py-2 font-display text-[1.0625rem] uppercase tracking-[0.05em] transition',
+                    active ? 'bg-accent text-on-accent' : 'text-ink hover:bg-raised',
                   )}
                 >
                   <s.icon className="size-[1.15rem]" />
@@ -155,17 +158,17 @@ export function AppShell({ children }: { children: ReactNode }) {
           {isMod && (
             <NavLink
               to="/mod"
-              className={({ isActive: a }) => cx('mt-3 flex items-center gap-3 rounded-xl px-3 py-2 text-[0.9375rem] font-medium transition', a ? 'bg-accent/10 text-accent' : 'text-ink hover:bg-raised')}
+              className={({ isActive: a }) => cx('mt-3 flex items-center gap-3 rounded-xl px-3 py-2 font-display text-[1.0625rem] uppercase tracking-[0.05em] transition', a ? 'bg-accent text-on-accent' : 'text-ink hover:bg-raised')}
             >
               <ShieldCheck className="size-[1.15rem]" />
               <span className="flex-1">Moderation</span>
-              {openReports > 0 && <span className="rounded-full bg-danger px-2 py-0.5 text-xs font-semibold text-white">{openReports}</span>}
+              {openReports > 0 && <span className="rounded-full bg-danger px-2 py-0.5 text-xs font-semibold text-bg">{openReports}</span>}
             </NavLink>
           )}
           {profile?.is_dev && (
             <NavLink
               to="/dev"
-              className={({ isActive: a }) => cx('flex items-center gap-3 rounded-xl px-3 py-2 text-[0.9375rem] font-medium transition', a ? 'bg-accent/10 text-accent' : 'text-ink hover:bg-raised')}
+              className={({ isActive: a }) => cx('flex items-center gap-3 rounded-xl px-3 py-2 font-display text-[1.0625rem] uppercase tracking-[0.05em] transition', a ? 'bg-accent text-on-accent' : 'text-ink hover:bg-raised')}
             >
               <Settings className="size-[1.15rem]" />
               Developer
@@ -196,7 +199,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="flex h-14 items-center gap-3 px-4">
           <Link to="/" className="flex items-center gap-2.5">
             <AppMark size={30} />
-            <span className="font-semibold" style={{ fontStretch: '115%' }}>
+            <span className="whitespace-nowrap font-display text-[1.1875rem] uppercase leading-none tracking-wide">
               {APP_NAME}
             </span>
           </Link>
@@ -218,7 +221,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl px-4 pb-[calc(6.5rem+env(safe-area-inset-bottom))] pt-5 sm:px-6 lg:px-10 lg:pb-16 lg:pt-10">{children}</main>
+      {!immersive && <div className="stripes stripes-tl mt-3 lg:mt-5" aria-hidden />}
+      <main className={cx('mx-auto w-full max-w-6xl flex-1 px-4 pt-5 sm:px-6 lg:px-10 lg:pt-8', immersive ? 'pb-0' : 'pb-10 lg:pb-14')}>{children}</main>
+      {!immersive && <div className="stripes stripes-br mb-5" aria-hidden />}
+      {/* Room for the phone tab bar. */}
+      <div className="h-[calc(4rem+env(safe-area-inset-bottom))] shrink-0 lg:hidden" />
 
       {/* Phone: bottom tabs */}
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
@@ -229,7 +236,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Link key={s.to} to={s.to} className="relative flex flex-col items-center justify-center gap-1" aria-current={active ? 'page' : undefined}>
                 {active && <span className="absolute top-0 h-0.5 w-8 rounded-full bg-accent" />}
                 <s.icon className={cx('size-[1.35rem] transition', active ? 'text-accent' : 'text-muted')} strokeWidth={active ? 2.3 : 1.9} />
-                <span className={cx('text-[0.6875rem] font-medium', active ? 'text-ink' : 'text-muted')}>{s.label}</span>
+                <span className={cx('font-display text-[0.75rem] uppercase tracking-[0.06em]', active ? 'text-ink' : 'text-muted')}>{s.label}</span>
               </Link>
             );
           })}

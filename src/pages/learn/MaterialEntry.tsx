@@ -26,7 +26,7 @@ export default function MaterialEntry() {
         eyebrow="Material"
         title={
           <span className="flex items-center gap-4">
-            <span className="bp-grid flex size-16 items-center justify-center rounded-2xl border border-line bg-surface text-ink">
+            <span className="art-tile flex size-16 items-center justify-center rounded-2xl border border-line text-ink">
               <MaterialIcon id={m.id} size={44} />
             </span>
             {m.name}
@@ -52,7 +52,7 @@ export default function MaterialEntry() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {ts.map((t) => (
-                    <Link key={t.slug} to={`/tools/${t.slug}`} className="flex items-center gap-2 rounded-xl border border-line bg-raised py-1.5 pl-1.5 pr-3 text-sm font-medium transition hover:border-blue/40">
+                    <Link key={t.slug} to={`/tools/${t.slug}`} className="flex items-center gap-2 rounded-xl border border-line bg-raised py-1.5 pl-1.5 pr-3 text-sm font-medium transition hover:border-navy/40">
                       <ToolArt slug={t.slug} className="size-8 text-ink" />
                       {t.name}
                     </Link>
@@ -65,7 +65,7 @@ export default function MaterialEntry() {
 
         <aside>
           <Card className="p-5">
-            <div className="label-mono mb-3 text-muted">Notes</div>
+            <div className="label-caps mb-3 text-muted">Notes</div>
             {m.notes.length > 0 ? (
               <ul className="space-y-2 text-sm">
                 {m.notes.map((n) => (

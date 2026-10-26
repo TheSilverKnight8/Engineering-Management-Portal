@@ -67,7 +67,7 @@ export default function Library() {
           .filter((c) => filtered.some((t) => t.category === c))
           .map((c) => (
             <section key={c} className="mb-10">
-              <h2 className="label-mono mb-3 text-muted">{categoryLabels[c]}</h2>
+              <h2 className="label-caps mb-3 text-muted">{categoryLabels[c]}</h2>
               <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
                 {filtered
                   .filter((t) => t.category === c)

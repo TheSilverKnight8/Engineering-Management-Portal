@@ -56,7 +56,7 @@ export default function Dev() {
             ['Projects ready', `${projects.filter((p) => p.status === 'ready').length}/${projects.length}`],
           ].map(([label, value]) => (
             <Card key={label} className="p-4">
-              <div className="font-mono text-2xl font-bold">{value}</div>
+              <div className="font-display text-3xl">{value}</div>
               <div className="text-sm text-muted">{label}</div>
             </Card>
           ))}
@@ -106,7 +106,7 @@ function MemberRow({ p, self }: { p: Profile; self: boolean }) {
         </div>
         <div className="text-xs text-muted">Joined {formatDate(p.created_at)}</div>
       </div>
-      <Select value={p.role} onChange={(e) => setAccess.mutate({ role: e.target.value as MemberRole, isMod: p.is_mod })} className="h-9 w-32 text-sm" aria-label={`Role for ${p.full_name}`}>
+      <Select value={p.role} onChange={(e) => setAccess.mutate({ role: e.target.value as MemberRole, isMod: p.is_mod })} wrapperClassName="w-32" className="h-9 text-sm" aria-label={`Role for ${p.full_name}`}>
         <option value="student">Student</option>
         <option value="teacher">Teacher</option>
       </Select>

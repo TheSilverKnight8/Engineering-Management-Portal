@@ -40,23 +40,23 @@ export default function Ste() {
           <p className="mt-2 text-[0.9375rem] leading-relaxed text-muted">
             {steFacts.name} is a writing standard first made for aircraft maintenance manuals. It limits the words and grammar a writer can use, so that instructions have one meaning, read fast, and are clear to people whose first language is not English. The current edition is {steFacts.issue} ({steFacts.published}). It is maintained by {steFacts.maintainer} and has {steFacts.ruleCount} writing rules plus a dictionary of approved words.
           </p>
-          <a href={steFacts.url} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-blue hover:underline">
+          <a href={steFacts.url} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">
             Request the free standard at asd-ste100.org <ExternalLink className="size-3.5" />
           </a>
         </Card>
-        <Card className="bp-grid p-5">
-          <div className="label-mono text-muted">In this app’s tool entries</div>
+        <Card className="p-5">
+          <div className="label-caps text-muted">In this app’s tool entries</div>
           <div className="mt-3 space-y-3">
             <div>
-              <div className="font-mono text-3xl font-bold">{stats.count}</div>
+              <div className="font-display text-4xl">{stats.count}</div>
               <div className="text-sm text-muted">procedure sentences</div>
             </div>
             <div>
-              <div className="font-mono text-3xl font-bold">{stats.avg.toFixed(1)}</div>
+              <div className="font-display text-4xl">{stats.avg.toFixed(1)}</div>
               <div className="text-sm text-muted">words per sentence on average</div>
             </div>
             <div>
-              <div className="font-mono text-3xl font-bold">{stats.longest.words}</div>
+              <div className="font-display text-4xl">{stats.longest.words}</div>
               <div className="text-sm text-muted">words in the longest ({stats.longest.tool.name})</div>
             </div>
           </div>
@@ -69,7 +69,7 @@ export default function Ste() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {steRules.map((r, i) => (
             <Card key={r.title} className="p-5">
-              <div className="mb-2 font-mono text-sm font-bold text-accent">{String(i + 1).padStart(2, '0')}</div>
+              <div className="mb-2 font-display text-lg text-accent">{String(i + 1).padStart(2, '0')}</div>
               <h3 className="font-semibold">{r.title}</h3>
               <p className="mt-1 text-sm text-muted">{r.detail}</p>
             </Card>
@@ -88,7 +88,7 @@ export default function Ste() {
                 <div className="text-sm">
                   <p className="text-muted">{e.shows}</p>
                   {tool && (
-                    <Link to={`/tools/${tool.slug}`} className="mt-1 inline-block text-blue hover:underline">
+                    <Link to={`/tools/${tool.slug}`} className="mt-1 inline-block text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">
                       {tool.name}
                     </Link>
                   )}
@@ -105,7 +105,7 @@ export default function Ste() {
           <Card className="divide-y divide-line">
             {stats.over.map((x) => (
               <div key={x.s} className="p-4 text-sm">
-                <span className="font-mono text-warn">{x.words}</span> · {x.s} <span className="text-muted">({x.tool.name})</span>
+                <span className="font-display text-warn">{x.words}</span> · {x.s} <span className="text-muted">({x.tool.name})</span>
               </div>
             ))}
           </Card>

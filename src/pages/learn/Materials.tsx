@@ -20,7 +20,7 @@ export default function Materials() {
               className="group flex animate-rise items-center gap-5 rounded-2xl border border-line bg-surface p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-pop"
               style={{ animationDelay: `${i * 40}ms` }}
             >
-              <div className="bp-grid flex size-20 shrink-0 items-center justify-center rounded-2xl border border-line bg-bg/50 text-ink">
+              <div className="art-tile flex size-20 shrink-0 items-center justify-center rounded-2xl border border-line text-ink">
                 <MaterialIcon id={m.id} size={56} />
               </div>
               <div className="min-w-0 flex-1">

@@ -52,7 +52,7 @@ export function Live({ children }: { children: ReactNode }) {
     return (
       <EmptyState
         art={
-          <div className="flex size-16 items-center justify-center rounded-2xl bg-blue/10 text-blue">
+          <div className="flex size-16 items-center justify-center rounded-2xl bg-navy/10 text-navy">
             <Database className="size-8" />
           </div>
         }
@@ -61,7 +61,7 @@ export function Live({ children }: { children: ReactNode }) {
       >
         This part of the app keeps its data in Supabase. Follow “Set up Supabase” in the README, then add the URL and publishable key to <code className="font-mono text-ink">.env.local</code>. The tool library, picker, and Learn pages work without it.
         <div className="mt-4">
-          <Link to="/tools" className="text-blue hover:underline">
+          <Link to="/tools" className="text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">
             Open the tool library
           </Link>
         </div>

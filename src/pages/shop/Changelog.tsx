@@ -52,7 +52,7 @@ export default function Changelog() {
         <div className="space-y-6">
           {groups.map(([day, rows]) => (
             <section key={day}>
-              <h2 className="label-mono mb-2 text-muted">{day}</h2>
+              <h2 className="label-caps mb-2 text-muted">{day}</h2>
               <Card className="divide-y divide-line">
                 {rows.map((e) => (
                   <LogRow key={e.id} e={e} />

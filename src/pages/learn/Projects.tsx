@@ -30,7 +30,7 @@ export default function Projects() {
                     ))}
                   </div>
                 )}
-                <span className="mt-auto flex items-center gap-1 pt-4 text-sm font-medium text-blue">
+                <span className="mt-auto flex items-center gap-1 pt-4 text-sm font-medium text-navy">
                   Open <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
                 </span>
               </Link>

@@ -36,7 +36,7 @@ export default function Join() {
         <div className="mb-5 flex size-12 items-center justify-center rounded-2xl bg-accent/10 text-accent">
           <KeyRound className="size-6" />
         </div>
-        <h1 className="text-[1.75rem] font-bold leading-tight">Join the class</h1>
+        <h1 className="text-[2.5rem] leading-[0.95]">Join the class</h1>
         <p className="mt-1.5 text-[0.9375rem] text-muted">Enter the join code from your teacher.</p>
 
         <form onSubmit={submit} className="mt-6 space-y-4">
@@ -64,7 +64,7 @@ export default function Join() {
 
         <p className="mt-6 text-center text-sm text-muted">
           Signed in as {session?.user.email}.{' '}
-          <button className="text-blue hover:underline" onClick={() => void signOut()}>
+          <button className="text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent" onClick={() => void signOut()}>
             Sign out
           </button>
         </p>

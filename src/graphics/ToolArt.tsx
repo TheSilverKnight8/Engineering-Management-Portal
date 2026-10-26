@@ -3,8 +3,8 @@
 // Conventions (classes are styled in index.css under .art):
 //   b     = body, light blueprint fill
 //   s     = solid surface fill (hides lines behind it)
-//   hot   = the part that cuts, spins, or burns, in safety orange
-//   hotb  = same, with a light orange fill
+//   hot   = the part that cuts, spins, or burns, in red
+//   hotb  = same, with a light red fill
 //   dash  = hidden part (blueprint convention), for example a wheel inside a housing
 //
 // To add a tool, add a drawing to `drawings` under the tool's slug. Tools with

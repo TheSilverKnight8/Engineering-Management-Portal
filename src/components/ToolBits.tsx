@@ -45,11 +45,11 @@ export function ToolCard({ tool, footer, className, style }: { tool: Tool; foote
     <Link
       to={`/tools/${tool.slug}`}
       style={style}
-      className={cx('group flex flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-card transition hover:-translate-y-0.5 hover:border-blue/40 hover:shadow-pop', className)}
+      className={cx('group flex flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-card transition hover:-translate-y-0.5 hover:border-navy/40 hover:shadow-pop', className)}
     >
-      <div className="bp-grid relative border-b border-line bg-bg/40 px-6 py-4 text-ink">
+      <div className="art-tile relative border-b border-line px-6 py-4 text-ink">
         <ToolArt slug={tool.slug} className="mx-auto aspect-square w-full max-w-[9.5rem] transition duration-300 group-hover:scale-[1.04]" />
-        <span className="label-mono absolute left-3 top-3 text-muted">{tool.form}</span>
+        <span className="label-caps absolute left-3 top-3 text-muted">{tool.form}</span>
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div>

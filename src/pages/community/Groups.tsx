@@ -33,7 +33,7 @@ export default function Groups() {
     return (
       <Link key={g.id} to={`/groups/${g.id}`} className="group flex flex-col rounded-2xl border border-line bg-surface p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-pop">
         <div className="mb-3 flex items-center gap-3">
-          <span className="flex size-10 items-center justify-center rounded-xl bg-blue/12 text-blue">
+          <span className="flex size-10 items-center justify-center rounded-xl bg-navy/12 text-navy">
             <MessagesSquare className="size-5" />
           </span>
           <div className="min-w-0 flex-1">
@@ -52,7 +52,7 @@ export default function Groups() {
               </span>
             ))}
           </div>
-          <span className="text-sm font-medium text-blue">{member ? 'Open channel' : 'View'}</span>
+          <span className="text-sm font-medium text-navy">{member ? 'Open channel' : 'View'}</span>
         </div>
       </Link>
     );
@@ -85,13 +85,13 @@ export default function Groups() {
         <div className="space-y-8">
           {mine.length > 0 && (
             <section>
-              <h2 className="label-mono mb-3 text-muted">Your groups</h2>
+              <h2 className="label-caps mb-3 text-muted">Your groups</h2>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{mine.map((g) => card(g, true))}</div>
             </section>
           )}
           {others.length > 0 && (
             <section>
-              <h2 className="label-mono mb-3 text-muted">Other groups</h2>
+              <h2 className="label-caps mb-3 text-muted">Other groups</h2>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{others.map((g) => card(g, false))}</div>
             </section>
           )}

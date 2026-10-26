@@ -1,12 +1,21 @@
 @import 'tailwindcss';
 
 /* Colors are tokens so the whole app switches between light and dark from one
-   place. The look: blueprint blue for structure, safety orange for anything
-   that cuts, spins, or needs attention. */
+   place. The palette is the Shop Manual's: cream, navy, and red. Light mode
+   matches the title slide (navy on cream). Dark mode is its inverse (cream on
+   navy). Red marks emphasis and anything that cuts, spins, or needs attention. */
+
+@font-face {
+  font-family: 'Norwester';
+  src: url('./assets/fonts/norwester.otf') format('opentype');
+  font-display: swap;
+}
 
 @theme {
   --font-sans: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, monospace;
+  /* Norwester by Jamie Wilson, SIL Open Font License (src/assets/fonts). */
+  --font-display: 'Norwester', 'Archivo Variable', ui-sans-serif, sans-serif;
 
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -16,13 +25,20 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-on-accent: var(--on-accent);
-  --color-blue: var(--blue);
+  --color-navy: var(--navy);
   --color-ok: var(--ok);
   --color-warn: var(--warn);
   --color-danger: var(--danger);
 
   --shadow-card: var(--shadow-card);
   --shadow-pop: var(--shadow-pop);
+
+  /* Squarer corners than the Tailwind defaults, to match the Shop Manual's
+     flat, rectangular look. Pills and avatars stay round. */
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.375rem;
+  --radius-2xl: 0.5rem;
+  --radius-3xl: 0.625rem;
 
   --animate-rise: rise 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-fade: fade 0.25s ease both;
@@ -50,66 +66,71 @@
 
 :root {
   color-scheme: light;
-  --bg: #eef1f6;
-  --surface: #ffffff;
-  --raised: #f5f7fb;
-  --line: #d8deea;
-  --ink: #0c1424;
-  --muted: #56627b;
-  --accent: #d9480f;
-  --on-accent: #ffffff;
-  --blue: #1b5fd0;
-  --ok: #0b8a5b;
-  --warn: #a96300;
-  --danger: #cc3a3a;
-  --grid: rgb(27 95 208 / 0.07);
-  --grid-strong: rgb(27 95 208 / 0.13);
-  --art-fill: rgb(27 95 208 / 0.08);
-  --shadow-card: 0 1px 2px rgb(12 20 36 / 0.05), 0 6px 20px rgb(12 20 36 / 0.05);
-  --shadow-pop: 0 12px 40px rgb(12 20 36 / 0.18);
+  --brand-cream: #faeeda;
+  --brand-navy: #002657;
+  --brand-red: #fc3f3f;
+
+  --bg: var(--brand-cream);
+  --surface: #fff8ee;
+  --raised: #f4e4ca;
+  --line: color-mix(in srgb, var(--brand-navy) 17%, var(--brand-cream));
+  --ink: var(--brand-navy);
+  --muted: color-mix(in srgb, var(--brand-navy) 70%, var(--brand-cream));
+  --accent: var(--brand-red);
+  --on-accent: var(--brand-cream);
+  --navy: var(--brand-navy);
+  /* Status uses the same three colors: navy is fine, red needs attention. */
+  --ok: var(--brand-navy);
+  --warn: #d42f2f;
+  --danger: #c62828;
+  --stripe-a: var(--brand-navy);
+  --stripe-b: var(--brand-red);
+  --art-fill: rgb(0 38 87 / 0.07);
+  --shadow-card: 0 1px 2px rgb(0 38 87 / 0.06);
+  --shadow-pop: 0 14px 40px rgb(0 38 87 / 0.18);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --bg: #090f1a;
-    --surface: #101929;
-    --raised: #162136;
-    --line: #22304a;
-    --ink: #e6ebf4;
-    --muted: #8e9bb5;
-    --accent: #ff7a2b;
-    --on-accent: #1d0c00;
-    --blue: #5ea9ff;
-    --ok: #38cf97;
-    --warn: #f2b53b;
+    --bg: #001a3d;
+    --surface: var(--brand-navy);
+    --raised: #0b3367;
+    --line: color-mix(in srgb, var(--brand-cream) 16%, var(--brand-navy));
+    --ink: var(--brand-cream);
+    --muted: color-mix(in srgb, var(--brand-cream) 66%, var(--brand-navy));
+    --accent: var(--brand-red);
+    --on-accent: var(--brand-cream);
+    --navy: #a9c1ea;
+    --ok: #a9c1ea;
+    --warn: #ff6b6b;
     --danger: #ff6b6b;
-    --grid: rgb(94 169 255 / 0.055);
-    --grid-strong: rgb(94 169 255 / 0.11);
-    --art-fill: rgb(94 169 255 / 0.1);
-    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.2);
+    --stripe-a: var(--brand-cream);
+    --stripe-b: var(--brand-red);
+    --art-fill: rgb(250 238 218 / 0.08);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
     --shadow-pop: 0 16px 48px rgb(0 0 0 / 0.5);
   }
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #090f1a;
-  --surface: #101929;
-  --raised: #162136;
-  --line: #22304a;
-  --ink: #e6ebf4;
-  --muted: #8e9bb5;
-  --accent: #ff7a2b;
-  --on-accent: #1d0c00;
-  --blue: #5ea9ff;
-  --ok: #38cf97;
-  --warn: #f2b53b;
+  --bg: #001a3d;
+  --surface: var(--brand-navy);
+  --raised: #0b3367;
+  --line: color-mix(in srgb, var(--brand-cream) 16%, var(--brand-navy));
+  --ink: var(--brand-cream);
+  --muted: color-mix(in srgb, var(--brand-cream) 66%, var(--brand-navy));
+  --accent: var(--brand-red);
+  --on-accent: var(--brand-cream);
+  --navy: #a9c1ea;
+  --ok: #a9c1ea;
+  --warn: #ff6b6b;
   --danger: #ff6b6b;
-  --grid: rgb(94 169 255 / 0.055);
-  --grid-strong: rgb(94 169 255 / 0.11);
-  --art-fill: rgb(94 169 255 / 0.1);
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.2);
+  --stripe-a: var(--brand-cream);
+  --stripe-b: var(--brand-red);
+  --art-fill: rgb(250 238 218 / 0.08);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
   --shadow-pop: 0 16px 48px rgb(0 0 0 / 0.5);
 }
 
@@ -117,27 +138,34 @@
   html {
     -webkit-tap-highlight-color: transparent;
     text-size-adjust: 100%;
+    /* Norwester has one weight; never fake a bold or italic version of it. */
+    font-synthesis: none;
   }
   body {
     background: var(--bg);
     color: var(--ink);
     font-family: var(--font-sans);
-    font-feature-settings: 'ss01';
     -webkit-font-smoothing: antialiased;
     overscroll-behavior-y: none;
   }
+  /* Headings use Norwester in capitals, like the Shop Manual. It has one
+     weight, so the browser must not fake a bold version. */
   h1,
   h2,
   h3 {
-    font-stretch: 112%;
-    letter-spacing: -0.01em;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-synthesis: none;
+    text-transform: uppercase;
+    letter-spacing: 0.015em;
+    line-height: 1.05;
     text-wrap: balance;
   }
   ::selection {
     background: color-mix(in srgb, var(--accent) 30%, transparent);
   }
   :focus-visible {
-    outline: 2px solid var(--blue);
+    outline: 2px solid var(--navy);
     outline-offset: 2px;
   }
   button {
@@ -146,28 +174,58 @@
 }
 
 @layer components {
-  /* Blueprint grid behind illustrations and hero areas. */
-  .bp-grid {
-    background-image:
-      linear-gradient(var(--grid-strong) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px),
-      linear-gradient(var(--grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size:
-      80px 80px,
-      80px 80px,
-      16px 16px,
-      16px 16px;
-    background-position: -1px -1px;
+  /* The Shop Manual's stripes: navy, red, navy, flush to one edge, in
+     staggered lengths. stripes-tl hangs from the left edge (top of a page),
+     stripes-br comes in from the right (bottom of a page). */
+  .stripes {
+    --bar: 8px;
+    --gap: 5px;
+    height: calc(var(--bar) * 3 + var(--gap) * 2);
+    background:
+      linear-gradient(var(--stripe-a) 0 0) var(--x) 0 / var(--l1) var(--bar),
+      linear-gradient(var(--stripe-b) 0 0) var(--x) calc(var(--bar) + var(--gap)) / var(--l2) var(--bar),
+      linear-gradient(var(--stripe-a) 0 0) var(--x) calc(2 * (var(--bar) + var(--gap))) / var(--l3) var(--bar);
+    background-repeat: no-repeat;
+  }
+  .stripes-tl {
+    --x: 0%;
+    --l1: 91%;
+    --l2: 50%;
+    --l3: 72%;
+  }
+  .stripes-br {
+    --x: 100%;
+    --l1: 59%;
+    --l2: 38%;
+    --l3: 77%;
+  }
+  .stripes-sm {
+    --bar: 4px;
+    --gap: 3px;
+  }
+  .stripes-lg {
+    --bar: 20px;
+    --gap: 12px;
   }
 
-  /* Yellow-and-black stripe used on safety callouts. */
-  .hazard-stripe {
-    background: repeating-linear-gradient(-45deg, var(--warn) 0 8px, #141414 8px 16px);
+  /* Flat cream panel behind tool illustrations. */
+  .art-tile {
+    background-color: var(--raised);
+  }
+
+  /* Small capitals label (eyebrows, section labels). */
+  .label-caps {
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    font-synthesis: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.2;
   }
 
   /* Line-art illustrations. The part that cuts, spins, or burns is drawn in
-     safety orange on every tool, so students learn where the danger is. */
+     red on every tool, so students learn where the danger is. */
   .art {
     fill: none;
     stroke: currentColor;
@@ -197,13 +255,6 @@
   }
   .art .dash {
     stroke-dasharray: 3 4;
-  }
-
-  .label-mono {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
   }
 
   .scrollbar-none {

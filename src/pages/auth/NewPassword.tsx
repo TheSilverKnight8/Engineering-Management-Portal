@@ -28,7 +28,7 @@ export default function NewPassword() {
   return (
     <AuthLayout>
       <form onSubmit={submit} className="animate-rise space-y-4">
-        <h1 className="text-[1.75rem] font-bold leading-tight">Set a new password</h1>
+        <h1 className="text-[2.5rem] leading-[0.95]">Set a new password</h1>
         <Field label="New password" htmlFor="pw" hint="At least 8 characters.">
           <Input id="pw" type="password" autoComplete="new-password" minLength={8} required value={password} onChange={(e) => setPassword(e.target.value)} />
         </Field>

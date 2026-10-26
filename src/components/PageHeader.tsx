@@ -13,9 +13,9 @@ export function PageHeader({ title, subtitle, back, actions, eyebrow }: { title:
       )}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          {eyebrow && <div className="label-mono mb-2 text-accent">{eyebrow}</div>}
-          <h1 className="text-[1.75rem] font-bold leading-tight sm:text-[2.125rem]">{title}</h1>
-          {subtitle && <p className="mt-1.5 max-w-2xl text-[0.9375rem] text-muted">{subtitle}</p>}
+          {eyebrow && <div className="label-caps mb-2.5 text-accent">{eyebrow}</div>}
+          <h1 className="text-[2.25rem] leading-[0.95] sm:text-[3rem]">{title}</h1>
+          {subtitle && <p className="mt-2.5 max-w-2xl text-[0.9375rem] text-muted">{subtitle}</p>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
       </div>

@@ -116,7 +116,7 @@ export default function Inventory() {
             <Card className="divide-y divide-line overflow-hidden">
               {rows.map(({ item, a }) => (
                 <div key={item.id} className="flex items-center gap-3 p-3 transition hover:bg-raised/60 sm:gap-4 sm:p-4">
-                  <Link to={`/shop/${item.id}`} className="bp-grid flex size-14 shrink-0 items-center justify-center rounded-xl border border-line bg-bg/50 text-ink sm:size-16">
+                  <Link to={`/shop/${item.id}`} className="art-tile flex size-14 shrink-0 items-center justify-center rounded-xl border border-line text-ink sm:size-16">
                     <ToolArt slug={item.tool_slug ?? ''} className="size-11 sm:size-12" />
                   </Link>
                   <Link to={`/shop/${item.id}`} className="min-w-0 flex-1">

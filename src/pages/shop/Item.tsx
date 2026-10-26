@@ -68,7 +68,7 @@ export default function Item() {
         <div className="space-y-6">
           <Card className="overflow-hidden">
             <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:p-6">
-              <div className="bp-grid flex size-28 shrink-0 items-center justify-center rounded-2xl border border-line bg-bg/50 text-ink">
+              <div className="art-tile flex size-28 shrink-0 items-center justify-center rounded-2xl border border-line text-ink">
                 <ToolArt slug={item.tool_slug ?? ''} className="size-24" />
               </div>
               <div className="min-w-0 flex-1">
@@ -83,7 +83,7 @@ export default function Item() {
                     </span>
                   )}
                   {tool && (
-                    <Link to={`/tools/${tool.slug}`} className="inline-flex items-center gap-1 text-blue hover:underline">
+                    <Link to={`/tools/${tool.slug}`} className="inline-flex items-center gap-1 text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">
                       <BookOpen className="size-4" />
                       How to operate
                     </Link>
@@ -121,7 +121,7 @@ export default function Item() {
 
           {item.notes && (
             <Card className="p-5">
-              <div className="label-mono mb-2 text-muted">Notes</div>
+              <div className="label-caps mb-2 text-muted">Notes</div>
               <p className="whitespace-pre-wrap text-[0.9375rem]">{item.notes}</p>
             </Card>
           )}
@@ -139,7 +139,7 @@ export default function Item() {
 
         <aside className="space-y-6 lg:sticky lg:top-10 lg:self-start">
           <Card className="p-5">
-            <div className="label-mono mb-3 text-muted">Right now</div>
+            <div className="label-caps mb-3 text-muted">Right now</div>
             <AvailabilityLine a={a} names={(uid) => names(uid)} />
             {a.current && (
               <div className="mt-3 rounded-xl bg-raised p-3 text-sm">
