@@ -1,0 +1,224 @@
+@import 'tailwindcss';
+
+/* Colors are tokens so the whole app switches between light and dark from one
+   place. The look: blueprint blue for structure, safety orange for anything
+   that cuts, spins, or needs attention. */
+
+@theme {
+  --font-sans: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, monospace;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-blue: var(--blue);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+
+  --animate-rise: rise 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-fade: fade 0.25s ease both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+:root {
+  color-scheme: light;
+  --bg: #eef1f6;
+  --surface: #ffffff;
+  --raised: #f5f7fb;
+  --line: #d8deea;
+  --ink: #0c1424;
+  --muted: #56627b;
+  --accent: #d9480f;
+  --on-accent: #ffffff;
+  --blue: #1b5fd0;
+  --ok: #0b8a5b;
+  --warn: #a96300;
+  --danger: #cc3a3a;
+  --grid: rgb(27 95 208 / 0.07);
+  --grid-strong: rgb(27 95 208 / 0.13);
+  --art-fill: rgb(27 95 208 / 0.08);
+  --shadow-card: 0 1px 2px rgb(12 20 36 / 0.05), 0 6px 20px rgb(12 20 36 / 0.05);
+  --shadow-pop: 0 12px 40px rgb(12 20 36 / 0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #090f1a;
+    --surface: #101929;
+    --raised: #162136;
+    --line: #22304a;
+    --ink: #e6ebf4;
+    --muted: #8e9bb5;
+    --accent: #ff7a2b;
+    --on-accent: #1d0c00;
+    --blue: #5ea9ff;
+    --ok: #38cf97;
+    --warn: #f2b53b;
+    --danger: #ff6b6b;
+    --grid: rgb(94 169 255 / 0.055);
+    --grid-strong: rgb(94 169 255 / 0.11);
+    --art-fill: rgb(94 169 255 / 0.1);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.2);
+    --shadow-pop: 0 16px 48px rgb(0 0 0 / 0.5);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #090f1a;
+  --surface: #101929;
+  --raised: #162136;
+  --line: #22304a;
+  --ink: #e6ebf4;
+  --muted: #8e9bb5;
+  --accent: #ff7a2b;
+  --on-accent: #1d0c00;
+  --blue: #5ea9ff;
+  --ok: #38cf97;
+  --warn: #f2b53b;
+  --danger: #ff6b6b;
+  --grid: rgb(94 169 255 / 0.055);
+  --grid-strong: rgb(94 169 255 / 0.11);
+  --art-fill: rgb(94 169 255 / 0.1);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.2);
+  --shadow-pop: 0 16px 48px rgb(0 0 0 / 0.5);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    text-size-adjust: 100%;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01';
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+  }
+  h1,
+  h2,
+  h3 {
+    font-stretch: 112%;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+  button {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  /* Blueprint grid behind illustrations and hero areas. */
+  .bp-grid {
+    background-image:
+      linear-gradient(var(--grid-strong) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px),
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:
+      80px 80px,
+      80px 80px,
+      16px 16px,
+      16px 16px;
+    background-position: -1px -1px;
+  }
+
+  /* Yellow-and-black stripe used on safety callouts. */
+  .hazard-stripe {
+    background: repeating-linear-gradient(-45deg, var(--warn) 0 8px, #141414 8px 16px);
+  }
+
+  /* Line-art illustrations. The part that cuts, spins, or burns is drawn in
+     safety orange on every tool, so students learn where the danger is. */
+  .art {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .art .b {
+    fill: var(--art-fill);
+  }
+  .art .s {
+    fill: var(--surface);
+  }
+  .art .hot {
+    stroke: var(--accent);
+  }
+  .art .hotf {
+    fill: var(--accent);
+    stroke: none;
+  }
+  .art .hotb {
+    stroke: var(--accent);
+    fill: color-mix(in srgb, var(--accent) 16%, transparent);
+  }
+  .art .thin {
+    stroke-width: 1.5;
+  }
+  .art .dash {
+    stroke-dasharray: 3 4;
+  }
+
+  .label-mono {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
