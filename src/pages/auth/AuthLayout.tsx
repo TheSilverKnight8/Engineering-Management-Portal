@@ -26,10 +26,12 @@ export function AuthLayout({ children }: { children: ReactNode }) {
             ))}
           </div>
         </div>
-        {/* Like the slide: the logo sits in the bottom-left corner, beside the bottom stripes. */}
+        {/* Like the slide: the logo sits in the gap between the left edge and the bottom bars, centered. */}
         <div className="relative">
           <div className="stripes stripes-br stripes-lg" aria-hidden />
-          <CroswellLogo className="absolute bottom-0 left-[2%] w-[19%] text-ink" />
+          <div className="absolute inset-y-0 left-0 flex w-[23%] items-center justify-center">
+            <CroswellLogo className="w-[85%] text-ink" />
+          </div>
         </div>
       </div>
 

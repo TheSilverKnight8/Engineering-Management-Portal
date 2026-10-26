@@ -1,16 +1,22 @@
 import logoUrl from '../assets/logo/croswell-industries.svg';
+import markUrl from '../assets/logo/croswell-c.svg';
 import { cx } from '../components/ui';
 
-// The owner's Croswell Industries logo. It is used as a mask, so it is drawn in
-// the current text color: navy on cream, cream on navy in dark mode.
+// The owner's Croswell Industries logo and its "C" mark. Both are used as
+// masks, so they are drawn in the current text color: navy on cream, cream on
+// navy in dark mode.
+
+function masked(url: string) {
+  const mask = `url("${url}") center / contain no-repeat`;
+  return { WebkitMask: mask, mask };
+}
+
+/** Full logo with the name and tagline. Used on the sign-in screens and Home. */
 export function CroswellLogo({ className }: { className?: string }) {
-  const mask = `url("${logoUrl}") center / contain no-repeat`;
-  return (
-    <span
-      role="img"
-      aria-label="Croswell Industries: Making your life easier"
-      className={cx('block aspect-[675/154] bg-current', className)}
-      style={{ WebkitMask: mask, mask }}
-    />
-  );
+  return <span role="img" aria-label="Croswell Industries: Making your life easier" className={cx('block aspect-[675/154] bg-current', className)} style={masked(logoUrl)} />;
+}
+
+/** The "C" mark alone. Used on every other screen. */
+export function CroswellMark({ className }: { className?: string }) {
+  return <span role="img" aria-label="Croswell Industries" className={cx('block aspect-[84.4/94] bg-current', className)} style={masked(markUrl)} />;
 }

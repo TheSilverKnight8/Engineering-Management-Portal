@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 import { BookOpen, GraduationCap, House, MessagesSquare, Search, ShieldCheck, Warehouse, Wrench, Settings, type LucideIcon } from 'lucide-react';
 import { AppMark } from '../graphics/Icons';
-import { CroswellLogo } from '../graphics/Logo';
+import { CroswellLogo, CroswellMark } from '../graphics/Logo';
 import { APP_NAME, CLASS_NAME, SCHOOL_NAME } from '../config';
 import { useAuth } from '../lib/auth';
 import { canModerate } from '../lib/types';
@@ -96,6 +96,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   // A group channel fills the screen like a chat app, so it skips the page stripes.
   const immersive = /^\/groups\/[^/]+$/.test(pathname);
+  const isHome = pathname === '/';
 
   return (
     <div className="flex min-h-dvh flex-col lg:pl-[17rem]">
@@ -192,8 +193,6 @@ export function AppShell({ children }: { children: ReactNode }) {
               Content preview. Connect Supabase to sign in.
             </div>
           ) : null}
-          {/* The logo stays in the bottom-left corner of every screen, as on the title slide. */}
-          <CroswellLogo className="mx-2 mb-1 mt-4 w-[13rem] text-ink" />
         </div>
       </aside>
 
@@ -228,10 +227,16 @@ export function AppShell({ children }: { children: ReactNode }) {
       <main className={cx('mx-auto w-full max-w-6xl flex-1 px-4 pt-5 sm:px-6 lg:px-10 lg:pt-8', immersive ? 'pb-0' : 'pb-10 lg:pb-14')}>{children}</main>
       {!immersive && (
         <footer className="mb-5">
-          {/* Phones: the bars have no room, so the logo sits at the bottom-left of every page.
-              Computers show it in the sidebar instead. */}
-          <CroswellLogo className="mb-5 ml-4 w-44 text-ink sm:ml-6 lg:hidden" />
-          <div className="stripes stripes-br" aria-hidden />
+          {/* Home on phones: the full logo is too wide for the gap, so it sits above the stripes. */}
+          {isHome && <CroswellLogo className="mb-5 ml-4 w-44 text-ink sm:ml-6 lg:hidden" />}
+          <div className="relative">
+            <div className="stripes stripes-br" aria-hidden />
+            {/* As on the title slide, the logo sits in the gap between the left edge and the
+                bars, centered. The longest bar reaches 77% of the way, which leaves 23%. */}
+            <div className="absolute inset-y-0 left-0 flex w-[23%] items-center justify-center">
+              {isHome ? <CroswellLogo className="hidden w-[85%] max-w-[15rem] text-ink lg:block" /> : <CroswellMark className="h-9 text-ink lg:h-11" />}
+            </div>
+          </div>
         </footer>
       )}
       {/* Room for the phone tab bar. */}
