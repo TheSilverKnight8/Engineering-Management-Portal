@@ -61,6 +61,7 @@ const sections: NavSection[] = [
       { to: '/community', label: 'Posts' },
       { to: '/groups', label: 'Project groups' },
       { to: '/community/announcements', label: 'Announcements' },
+      { to: '/community/roster', label: 'Roster' },
     ],
   },
 ];

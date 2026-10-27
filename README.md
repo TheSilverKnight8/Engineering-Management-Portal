@@ -15,6 +15,7 @@ It runs on free tiers: Supabase (database, sign-in, image storage) and GitHub Pa
 | Shop inventory | Every tool unit, status (operational / needs maintenance), checkouts for a time window. Overlapping checkouts are refused by the database. Anyone can edit; every change goes in a changelog nobody can edit. | Supabase |
 | Project groups | Groups with a text channel each. New messages arrive live. | Supabase |
 | Posts | Papers, competition opportunities, and builds, with up to 4 photos. | Supabase |
+| Roster | Everyone in the class with their role, date joined, and project groups. Search by name or filter by group. Your own groups also show on your Profile. | Supabase |
 | Announcements | Teachers and the owner post news for the class (title, text, link, up to 4 photos). The database also posts a welcome announcement each time someone joins. | Supabase |
 | Moderation | Anyone can report a post, announcement, or message. Teachers and mod students review reports and remove or restore content. | Supabase |
 | Developer page | Owner only: set teacher role and mod students, remove members, change the join code. | Supabase |
