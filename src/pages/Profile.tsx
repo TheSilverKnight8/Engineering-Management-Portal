@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Download, LogOut, Monitor, Moon, Share, Sun } from 'lucide-react';
 import { useAuth } from '../lib/auth';
@@ -12,6 +13,7 @@ import { keys } from '../lib/queries';
 import { PageHeader } from '../components/PageHeader';
 import { Avatar, Button, Card, Field, Input, RoleBadges, SectionTitle, Segmented } from '../components/ui';
 import { JoinCodeCard } from './JoinCodeCard';
+import { GroupTags, useGroupsByMember } from './community/GroupTags';
 
 export default function Profile() {
   const { profile, session, signOut, refreshProfile } = useAuth();
@@ -19,6 +21,7 @@ export default function Profile() {
   const toast = useToast();
   const qc = useQueryClient();
   const [name, setName] = useState(profile?.full_name ?? '');
+  const myGroups = useGroupsByMember().get(profile?.id ?? '') ?? [];
 
   const saveName = useMutation({
     mutationFn: async () => {
@@ -49,6 +52,19 @@ export default function Profile() {
                 {profile.role === 'student' && !profile.is_mod && !profile.is_dev && <span className="text-xs capitalize text-muted">{profile.role}</span>}
               </div>
             </div>
+          </div>
+          <div className="mt-5">
+            <div className="mb-1.5 text-sm font-medium">Project groups</div>
+            {myGroups.length > 0 ? (
+              <GroupTags groups={myGroups} />
+            ) : (
+              <p className="text-sm text-muted">
+                You are not in a group yet.{' '}
+                <Link to="/groups" className="text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">
+                  See project groups
+                </Link>
+              </p>
+            )}
           </div>
           <form
             className="mt-6 flex items-end gap-2"
