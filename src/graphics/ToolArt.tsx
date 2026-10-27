@@ -235,6 +235,41 @@ const drawings: Record<string, ReactNode> = {
       <path d="M16 90v18M104 90v18M16 104h88" />
     </>
   ),
+
+  '3d-printer': (
+    <>
+      <circle className="b" cx="90" cy="11" r="7" />
+      <circle className="thin" cx="90" cy="11" r="2.5" />
+      <rect className="b" x="14" y="24" width="8" height="70" />
+      <rect className="b" x="98" y="24" width="8" height="70" />
+      <rect className="b" x="12" y="18" width="96" height="8" rx="2" />
+      <path className="thin" d="M85 15c-9 5-19 13-23 25" />
+      <rect className="b" x="22" y="46" width="76" height="6" />
+      <path className="b" d="M50 38h20v20l-4 4H54l-4-4z" />
+      <path className="hotb" d="M56 62h8l-4 6z" />
+      <rect className="s" x="46" y="72" width="28" height="14" />
+      <path className="thin" d="M46 76.5h28M46 81h28" />
+      <rect className="b" x="22" y="86" width="76" height="6" rx="1" />
+      <rect className="b" x="10" y="92" width="100" height="14" rx="2" />
+    </>
+  ),
+
+  'co2-laser-cutter': (
+    <>
+      <path className="b" d="M8 54l10-30h84l10 30z" />
+      <path className="thin" d="M20 50l7-21h66l7 21z" />
+      <path className="thin" d="M25 36h70" />
+      <rect className="b" x="52" y="32" width="16" height="8" rx="1" />
+      <path className="hot" d="M60 40v7" />
+      <circle className="hotf" cx="60" cy="48" r="2" />
+      <path d="M44 27h32" />
+      <rect className="b" x="8" y="54" width="104" height="44" rx="4" />
+      <rect className="thin" x="20" y="64" width="80" height="5" rx="1" />
+      <path className="thin" d="M20 82h22M20 87h22" />
+      <circle className="b" cx="96" cy="84" r="5" />
+      <path d="M18 98v6M102 98v6" />
+    </>
+  ),
 };
 
 const placeholder = (

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { Check, ChevronRight, ListOrdered, Plus, ShieldAlert, X } from 'lucide-react';
+import { Check, ChevronRight, ListOrdered, Plus, ShieldAlert, TriangleAlert, X } from 'lucide-react';
 import { tools } from '../../content/tools';
 import { categoryLabels, materialById, objectiveById, precisionLabels } from '../../content/catalog';
+import { toolDisclaimer } from '../../content/safety';
 import type { Tool } from '../../content/types';
 import { ToolArt } from '../../graphics/ToolArt';
 import { MaterialIcon, ObjectiveIcon } from '../../graphics/Icons';
@@ -29,6 +30,8 @@ export default function ToolEntry() {
         Tool library
       </Link>
 
+      <Disclaimer />
+
       {/* Hero */}
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-8">
         <div className="overflow-hidden rounded-3xl border border-line bg-surface shadow-card">
@@ -42,10 +45,12 @@ export default function ToolEntry() {
               </div>
               <h1 className="text-[2.5rem] leading-[0.95] sm:text-[3.25rem]">{tool.name}</h1>
               <p className="mt-3 text-[1.0625rem] leading-relaxed text-muted">{tool.summary}</p>
-              <div className="mt-5">
-                <div className="mb-2 text-sm font-medium">Before you start, put on</div>
-                <PpeRow tool={tool} />
-              </div>
+              {(tool.ppe.length > 0 || tool.noGloves) && (
+                <div className="mt-5">
+                  <div className="mb-2 text-sm font-medium">Before you start, put on</div>
+                  <PpeRow tool={tool} />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -157,6 +162,26 @@ export default function ToolEntry() {
 
       <StepMode open={stepMode} onClose={() => setStepMode(false)} tool={tool} />
     </div>
+  );
+}
+
+// The same notice is at the top of every tool entry. The text is in src/content/safety.ts.
+function Disclaimer() {
+  return (
+    <section aria-labelledby="disclaimer-title" className="mb-5 rounded-2xl border border-warn/40 bg-surface p-4 sm:p-5">
+      <h2 id="disclaimer-title" className="mb-2.5 flex items-center gap-2 text-lg leading-none">
+        <TriangleAlert className="size-5 text-warn" />
+        {toolDisclaimer.title}
+      </h2>
+      <ul className="space-y-1.5 text-sm leading-relaxed">
+        {toolDisclaimer.lines.map((line) => (
+          <li key={line} className="flex gap-2.5">
+            <span className="mt-[0.5rem] size-1.5 shrink-0 rounded-full bg-warn" />
+            {line}
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

@@ -107,6 +107,14 @@ const materialIcons: Record<MaterialId, ReactNode> = {
       <path className="thin" d="M12 12h8M31 36h5" />
     </>
   ),
+  plastic: (
+    <>
+      <circle className="b" cx="21" cy="26" r="15" />
+      <circle className="thin" cx="21" cy="26" r="10" />
+      <circle className="b" cx="21" cy="26" r="4" />
+      <path d="M35 21c5-2 9 1 8 7s-3 9-1 13" />
+    </>
+  ),
 };
 
 export function MaterialIcon({ id, size = 48, className = '' }: { id: MaterialId; size?: number; className?: string }) {
@@ -190,6 +198,20 @@ const objectiveIcons: Record<ObjectiveId, ReactNode> = {
       <path className="b" d="M3 8h8l2 3-2 3 2 7H3z" />
       <path className="b" d="M14.5 8H21v13h-5.5l-2-7 2-3z" />
       <path className="hot thin" d="M12 2l1 3M16 3l-1 3M8 3l2 3" />
+    </>
+  ),
+  engraving: (
+    <>
+      <rect className="b" x="3" y="13" width="18" height="8" rx="1.5" />
+      <path className="hot" d="M12 3v7" />
+      <path className="hot thin" d="M6.5 17h3.5M12 17h5.5" />
+    </>
+  ),
+  'advanced-fabrication': (
+    <>
+      <path className="b" d="M4 15v4l8 4 8-4v-4l-8 4z" />
+      <path className="b" d="M4 15l8-4 8 4-8 4z" />
+      <path className="hotb" d="M10 2.5h4v3.5L12 8.5 10 6z" />
     </>
   ),
 };

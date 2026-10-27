@@ -125,8 +125,10 @@ export function Field({ label, hint, error, children, htmlFor }: { label: string
   );
 }
 
+// Text boxes use 16px text on phones and tablets: iPhones zoom in on a text box
+// with smaller text when you tap it.
 const inputBase =
-  'w-full rounded-xl border border-line bg-raised px-3.5 text-[0.9375rem] text-ink placeholder:text-muted/70 outline-none transition focus:border-navy focus:bg-surface focus:ring-3 focus:ring-navy/15';
+  'w-full rounded-xl border border-line bg-raised px-3.5 text-base text-ink lg:text-[0.9375rem] placeholder:text-muted/70 outline-none transition focus:border-navy focus:bg-surface focus:ring-3 focus:ring-navy/15';
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(function Input({ className, ...rest }, ref) {
   return <input ref={ref} className={cx(inputBase, 'h-11', className)} {...rest} />;
