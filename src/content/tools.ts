@@ -731,7 +731,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "laser-cutter",
-    name: "Laser Cutter",
+    name: "Fiber Laser Cutter",
     category: "machines",
     form: "stationary",
     summary: "A 1200 W fiber laser on a CNC cutter table. It cuts carbon steel sheet up to 0.25 in thick in a 24 x 24 in area.",
@@ -778,7 +778,7 @@ export const tools: Tool[] = [
       "When the job is complete, turn off 'Enable lasering' on the touchscreen.",
       "Let the metal cool. Remove it with gloves.",
     ],
-    videos: [{ title: "Demo: Laser Cutter", youtubeId: "" }],
+    videos: [{ title: "Demo: Fiber Laser Cutter", youtubeId: "" }],
     graphics: [],
   },
   {
