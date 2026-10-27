@@ -6,7 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { db } from './supabase';
 import { useAuth } from './auth';
-import type { Checkout, Group, GroupMember, InventoryItem, LogEntry, Message, Post, Profile, Report } from './types';
+import type { Announcement, Checkout, Group, GroupMember, InventoryItem, LogEntry, Message, Post, Profile, Report } from './types';
 
 export const keys = {
   roster: ['roster'] as const,
@@ -18,6 +18,7 @@ export const keys = {
   groupMembers: ['group_members'] as const,
   messages: (groupId: string) => ['messages', groupId] as const,
   posts: ['posts'] as const,
+  announcements: ['announcements'] as const,
   reports: ['reports'] as const,
   joinCode: ['join_code'] as const,
 };
@@ -157,6 +158,15 @@ export function usePosts() {
     queryKey: keys.posts,
     enabled: live,
     queryFn: () => run<Post[]>(db().from('posts').select('*').order('created_at', { ascending: false }).limit(100)),
+  });
+}
+
+export function useAnnouncements() {
+  const live = useLive();
+  return useQuery({
+    queryKey: keys.announcements,
+    enabled: live,
+    queryFn: () => run<Announcement[]>(db().from('announcements').select('*').order('created_at', { ascending: false }).limit(100)),
   });
 }
 

@@ -14,7 +14,10 @@ import { POST_KIND_META } from './postKinds';
 
 const MAX_IMAGES = 4;
 
-export function PostComposer({ open, onClose }: { open: boolean; onClose: () => void }) {
+// Writes posts, and in "announcement" mode (teachers and the developer) announcements.
+// Announcements have no kind and no deadline.
+export function PostComposer({ open, onClose, mode = 'post' }: { open: boolean; onClose: () => void; mode?: 'post' | 'announcement' }) {
+  const announcing = mode === 'announcement';
   const me = useMe();
   const qc = useQueryClient();
   const toast = useToast();
@@ -50,24 +53,20 @@ export function PostComposer({ open, onClose }: { open: boolean; onClose: () => 
         if (error) throw error;
         paths.push(path);
       }
-      const { error } = await db()
-        .from('posts')
-        .insert({
-          kind,
-          title: title.trim(),
-          body: body.trim() || null,
-          link_url: link.trim() || null,
-          deadline: kind === 'competition' && deadline ? deadline : null,
-          image_paths: paths,
-        });
+      const fields = { title: title.trim(), body: body.trim() || null, link_url: link.trim() || null, image_paths: paths };
+      const { error } = announcing
+        ? await db().from('announcements').insert(fields)
+        : await db()
+            .from('posts')
+            .insert({ ...fields, kind, deadline: kind === 'competition' && deadline ? deadline : null });
       if (error) {
         if (paths.length) await db().storage.from(POST_IMAGE_BUCKET).remove(paths);
         throw error;
       }
     },
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: keys.posts });
-      toast('Posted.');
+      void qc.invalidateQueries({ queryKey: announcing ? keys.announcements : keys.posts });
+      toast(announcing ? 'Announcement posted.' : 'Posted.');
       onClose();
     },
     onError: (e) => toast(friendlyError(e), 'error'),
@@ -92,7 +91,7 @@ export function PostComposer({ open, onClose }: { open: boolean; onClose: () => 
       open={open}
       onClose={onClose}
       wide
-      title="New post"
+      title={announcing ? 'New announcement' : 'New post'}
       footer={
         <div className="flex justify-end gap-2">
           <Button onClick={onClose}>Cancel</Button>
@@ -103,34 +102,36 @@ export function PostComposer({ open, onClose }: { open: boolean; onClose: () => 
       }
     >
       <form id="post-form" onSubmit={submit} className="space-y-4 pt-1">
-        <div className="grid grid-cols-3 gap-2">
-          {(Object.keys(POST_KIND_META) as PostKind[]).map((k) => {
-            const m = POST_KIND_META[k];
-            const on = kind === k;
-            return (
-              <button
-                key={k}
-                type="button"
-                onClick={() => setKind(k)}
-                className={cx('flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition', on ? 'border-accent bg-accent/8 ring-1 ring-accent' : 'border-line hover:border-navy/40')}
-              >
-                <span className={cx('flex size-9 items-center justify-center rounded-lg', m.tone)}>
-                  <m.icon className="size-[1.1rem]" />
-                </span>
-                <span className="text-sm font-semibold">{m.label}</span>
-                <span className="hidden text-[0.6875rem] leading-tight text-muted sm:block">{m.hint}</span>
-              </button>
-            );
-          })}
-        </div>
+        {!announcing && (
+          <div className="grid grid-cols-3 gap-2">
+            {(Object.keys(POST_KIND_META) as PostKind[]).map((k) => {
+              const m = POST_KIND_META[k];
+              const on = kind === k;
+              return (
+                <button
+                  key={k}
+                  type="button"
+                  onClick={() => setKind(k)}
+                  className={cx('flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition', on ? 'border-accent bg-accent/8 ring-1 ring-accent' : 'border-line hover:border-navy/40')}
+                >
+                  <span className={cx('flex size-9 items-center justify-center rounded-lg', m.tone)}>
+                    <m.icon className="size-[1.1rem]" />
+                  </span>
+                  <span className="text-sm font-semibold">{m.label}</span>
+                  <span className="hidden text-[0.6875rem] leading-tight text-muted sm:block">{m.hint}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         <Field label="Title" htmlFor="title">
           <Input id="title" required maxLength={140} value={title} onChange={(e) => setTitle(e.target.value)} />
         </Field>
-        <Field label="Link" htmlFor="link" error={linkOk ? null : 'Start the link with https://'} hint={kind === 'paper' ? 'Link to the paper (for example on Google Drive or a journal site).' : 'Optional'}>
+        <Field label="Link" htmlFor="link" error={linkOk ? null : 'Start the link with https://'} hint={!announcing && kind === 'paper' ? 'Link to the paper (for example on Google Drive or a journal site).' : 'Optional'}>
           <Input id="link" type="url" inputMode="url" value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://" />
         </Field>
-        {kind === 'competition' && (
+        {!announcing && kind === 'competition' && (
           <Field label="Deadline" htmlFor="deadline" hint="Optional">
             <Input id="deadline" type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
           </Field>

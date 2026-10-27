@@ -15,7 +15,8 @@ It runs on free tiers: Supabase (database, sign-in, image storage) and GitHub Pa
 | Shop inventory | Every tool unit, status (operational / needs maintenance), checkouts for a time window. Overlapping checkouts are refused by the database. Anyone can edit; every change goes in a changelog nobody can edit. | Supabase |
 | Project groups | Groups with a text channel each. New messages arrive live. | Supabase |
 | Posts | Papers, competition opportunities, and builds, with up to 4 photos. | Supabase |
-| Moderation | Anyone can report a post or message. Teachers and mod students review reports and remove or restore content. | Supabase |
+| Announcements | Teachers and the owner post news for the class (title, text, link, up to 4 photos). The database also posts a welcome announcement each time someone joins. | Supabase |
+| Moderation | Anyone can report a post, announcement, or message. Teachers and mod students review reports and remove or restore content. | Supabase |
 | Developer page | Owner only: set teacher role and mod students, remove members, change the join code. | Supabase |
 
 Without Supabase settings the app runs in **content preview**: the picker, library, and Learn pages work, and the Supabase parts explain that they need setup.
@@ -124,6 +125,7 @@ Nothing in the app needs a paid plan.
 | Edit the inventory, check out tools | ✓ | ✓ | ✓ | ✓ |
 | Post, make and join groups, message | ✓ | ✓ | ✓ | ✓ |
 | Review reports, remove and restore posts and messages | | ✓ | ✓ | ✓ |
+| Post announcements | | | ✓ | ✓ |
 | See and change the join code | | | ✓ | ✓ |
 | Set roles and mods, remove members | | | | ✓ |
 | Change the app and its content | | | | ✓ (through the repo) |

@@ -28,7 +28,7 @@ export default function Moderation() {
       <PageHeader
         eyebrow="Teachers and mods"
         title="Moderation"
-        subtitle="Reported posts and messages. Removing hides the content from everyone except moderators and its author; you can restore it later."
+        subtitle="Reported posts, announcements, and messages. Removing hides the content from everyone except moderators and its author; you can restore it later."
       />
       {reports.isLoading ? (
         <LoadingBlock />
@@ -41,7 +41,7 @@ export default function Moderation() {
           }
           title="Nothing to review"
         >
-          When someone reports a post or a message, it shows here.
+          When someone reports a post, an announcement, or a message, it shows here.
         </EmptyState>
       ) : (
         <div className="space-y-3">
@@ -76,7 +76,8 @@ function ReportCard({ r }: { r: Report }) {
   const toast = useToast();
   const name = (id: string | null | undefined) => (id && roster.byId.get(id)?.full_name) || 'Former member';
   const snap = r.snapshot ?? {};
-  const link = r.target_type === 'post' ? `/community#${r.target_id}` : `/groups/${snap.group_id}`;
+  const link =
+    r.target_type === 'post' ? `/community#${r.target_id}` : r.target_type === 'announcement' ? `/community/announcements#${r.target_id}` : `/groups/${snap.group_id}`;
 
   const act = useMutation({
     mutationFn: async (action: 'remove' | 'dismiss') => {
@@ -90,6 +91,7 @@ function ReportCard({ r }: { r: Report }) {
     onSuccess: (action) => {
       void qc.invalidateQueries({ queryKey: keys.reports });
       void qc.invalidateQueries({ queryKey: keys.posts });
+      void qc.invalidateQueries({ queryKey: keys.announcements });
       toast(action === 'remove' ? 'Removed.' : 'Report dismissed.');
     },
     onError: (e) => toast(friendlyError(e), 'error'),
@@ -98,7 +100,9 @@ function ReportCard({ r }: { r: Report }) {
   return (
     <Card className={cx('p-5', r.resolved_at && 'opacity-70')}>
       <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted">
-        <Chip tone={r.target_type === 'post' ? 'navy' : 'neutral'}>{r.target_type === 'post' ? 'Post' : `Message in ${snap.group_name ?? 'a group'}`}</Chip>
+        <Chip tone={r.target_type === 'message' ? 'neutral' : 'navy'}>
+          {r.target_type === 'post' ? 'Post' : r.target_type === 'announcement' ? 'Announcement' : `Message in ${snap.group_name ?? 'a group'}`}
+        </Chip>
         <span>
           Reported by {name(r.reporter_id)} · {relativeTime(r.created_at)}
         </span>
