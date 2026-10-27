@@ -25,7 +25,7 @@ export default function Materials() {
               </div>
               <div className="min-w-0 flex-1">
                 <h2 className="text-xl font-semibold">{m.name}</h2>
-                <p className="text-sm text-muted">{list.length} tools work with it</p>
+                <p className="text-sm text-muted">{list.length === 1 ? '1 tool works' : `${list.length} tools work`} with it</p>
                 <div className="mt-2 flex -space-x-1.5">
                   {list.slice(0, 7).map((t) => (
                     <span key={t.slug} className="flex size-8 items-center justify-center rounded-full border border-line bg-surface text-ink">

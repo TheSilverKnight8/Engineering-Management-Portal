@@ -84,7 +84,7 @@ export default function Picker() {
                   <Tile key={m.id} on={on} onClick={() => set('m', on ? undefined : m.id)}>
                     <MaterialIcon id={m.id} size={44} className={on ? 'text-accent' : 'text-ink'} />
                     <span className="text-sm font-semibold">{m.name}</span>
-                    <span className="text-[0.6875rem] text-muted">{count} tools</span>
+                    <span className="text-[0.6875rem] text-muted">{count} {count === 1 ? 'tool' : 'tools'}</span>
                   </Tile>
                 );
               })}
@@ -228,7 +228,7 @@ function SizeInput({ label, value, onChange }: { label: string; value: string; o
           onChange(e.target.value.trim() === '' ? undefined : n !== null && n > 0 ? e.target.value.trim() : undefined);
         }}
         className={cx(
-          'h-11 w-full rounded-xl border bg-raised px-3 font-mono text-[0.9375rem] outline-none transition focus:bg-surface focus:ring-3',
+          'h-11 w-full rounded-xl border bg-raised px-3 font-mono text-base outline-none lg:text-[0.9375rem] transition focus:bg-surface focus:ring-3',
           bad ? 'border-danger focus:ring-danger/15' : 'border-line focus:border-navy focus:ring-navy/15',
         )}
       />

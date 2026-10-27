@@ -2,7 +2,7 @@
 // not in Supabase, so only someone who can push to the repo can change it, and
 // it costs nothing in database storage or bandwidth.
 
-export type MaterialId = 'wood' | 'acrylic' | 'polycarbonate' | 'metal';
+export type MaterialId = 'wood' | 'acrylic' | 'polycarbonate' | 'metal' | 'plastic';
 
 export type ObjectiveId =
   | 'straight-bore'
@@ -15,7 +15,9 @@ export type ObjectiveId =
   | 'demolition'
   | 'driving-screws'
   | 'surface-finishing'
-  | 'sharpening';
+  | 'sharpening'
+  | 'engraving'
+  | 'advanced-fabrication';
 
 export type PpeId =
   | 'safety-glasses'

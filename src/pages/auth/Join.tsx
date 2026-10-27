@@ -49,7 +49,7 @@ export default function Join() {
               spellCheck={false}
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
-              className="font-mono text-lg tracking-[0.3em]"
+              className="font-mono text-lg tracking-[0.3em] lg:text-lg"
               maxLength={12}
             />
           </Field>

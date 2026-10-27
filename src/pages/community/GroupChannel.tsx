@@ -337,7 +337,7 @@ function Composer({ groupId }: { groupId: string }) {
           onKeyDown={onKey}
           maxLength={2000}
           placeholder="Message the group"
-          className="max-h-40 flex-1 resize-none bg-transparent px-2.5 py-2 text-[0.9375rem] outline-none placeholder:text-muted"
+          className="max-h-40 flex-1 resize-none bg-transparent px-2.5 py-2 text-base outline-none lg:text-[0.9375rem] placeholder:text-muted"
         />
         <button type="submit" disabled={!text.trim()} className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-on-accent transition disabled:opacity-40" aria-label="Send">
           <Send className="size-4" />

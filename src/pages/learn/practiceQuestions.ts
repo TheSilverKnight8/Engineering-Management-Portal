@@ -23,7 +23,8 @@ function shuffle<T>(arr: T[]): T[] {
 const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
 
 function ppeQuestion(): Question {
-  const tool = pick(tools);
+  // Only tools whose entry lists PPE.
+  const tool = pick(tools.filter((t) => t.ppe.length > 0));
   return { kind: 'ppe', tool, answer: tool.ppe, source: tool.operation.find((s) => s.startsWith('Put on')) ?? '' };
 }
 
