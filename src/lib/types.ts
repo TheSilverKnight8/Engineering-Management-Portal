@@ -104,10 +104,25 @@ export interface Post {
   removed_by: string | null;
 }
 
+/** Posted by a teacher or the developer, or added by the database when someone joins (joined_id). */
+export interface Announcement {
+  id: string;
+  author_id: string | null;
+  joined_id: string | null;
+  title: string | null;
+  body: string | null;
+  link_url: string | null;
+  image_paths: string[];
+  created_at: string;
+  updated_at: string;
+  removed_at: string | null;
+  removed_by: string | null;
+}
+
 export interface Report {
   id: string;
   reporter_id: string | null;
-  target_type: 'post' | 'message';
+  target_type: 'post' | 'message' | 'announcement';
   target_id: string;
   reason: string | null;
   snapshot: {
@@ -127,3 +142,4 @@ export interface Report {
 
 export const canModerate = (p: Profile | null | undefined) => !!p && (p.role === 'teacher' || p.is_mod || p.is_dev);
 export const canSeeJoinCode = (p: Profile | null | undefined) => !!p && (p.role === 'teacher' || p.is_dev);
+export const canAnnounce = (p: Profile | null | undefined) => !!p && (p.role === 'teacher' || p.is_dev);

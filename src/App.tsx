@@ -28,6 +28,7 @@ const Materials = lazy(() => import('./pages/learn/Materials'));
 const MaterialEntry = lazy(() => import('./pages/learn/MaterialEntry'));
 const Ste = lazy(() => import('./pages/learn/Ste'));
 const Posts = lazy(() => import('./pages/community/Posts'));
+const Announcements = lazy(() => import('./pages/community/Announcements'));
 const Groups = lazy(() => import('./pages/community/Groups'));
 const GroupChannel = lazy(() => import('./pages/community/GroupChannel'));
 const Profile = lazy(() => import('./pages/Profile'));
@@ -83,6 +84,7 @@ function Gate() {
             <Route path="/learn/materials/:id" element={<MaterialEntry />} />
             <Route path="/learn/ste" element={<Ste />} />
             <Route path="/community" element={live(<Posts />)} />
+            <Route path="/community/announcements" element={live(<Announcements />)} />
             <Route path="/groups" element={live(<Groups />)} />
             <Route path="/groups/:id" element={live(<GroupChannel />)} />
             <Route path="/me" element={<Profile />} />

@@ -6,7 +6,7 @@ import { useToast } from '../../lib/toast';
 import { Sheet } from '../../components/Sheet';
 import { Button, Textarea } from '../../components/ui';
 
-export function ReportSheet({ target, onClose }: { target: { type: 'post' | 'message'; id: string } | null; onClose: () => void }) {
+export function ReportSheet({ target, onClose }: { target: { type: 'post' | 'message' | 'announcement'; id: string } | null; onClose: () => void }) {
   const toast = useToast();
   const [reason, setReason] = useState('');
   const send = useMutation({

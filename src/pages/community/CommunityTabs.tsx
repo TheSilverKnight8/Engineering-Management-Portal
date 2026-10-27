@@ -12,6 +12,9 @@ export function CommunityTabs() {
       <NavLink to="/groups" className={tab}>
         Project groups
       </NavLink>
+      <NavLink to="/community/announcements" className={tab}>
+        Announcements
+      </NavLink>
     </div>
   );
 }

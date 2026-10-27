@@ -60,6 +60,7 @@ const sections: NavSection[] = [
     children: [
       { to: '/community', label: 'Posts' },
       { to: '/groups', label: 'Project groups' },
+      { to: '/community/announcements', label: 'Announcements' },
     ],
   },
 ];
