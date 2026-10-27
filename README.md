@@ -34,7 +34,7 @@ Open the address it prints (usually http://localhost:5173).
 ## Set up Supabase
 
 1. Create a project at [supabase.com](https://supabase.com) on the **Free** plan.
-2. Open **SQL Editor**, paste all of [`supabase/migrations/0001_schema.sql`](supabase/migrations/0001_schema.sql), and run it. Then do the same with [`0002_storage.sql`](supabase/migrations/0002_storage.sql).
+2. Connect the repository in Supabase's **GitHub integration** (working directory `.`, production branch `main`, **Deploy to production** on). Every push to `main` then runs any files in [`supabase/migrations/`](supabase/migrations/) that the database has not run yet. The first push after connecting creates all the tables. Do not also paste these files into the SQL Editor, because running them twice fails.
    The schema grants table access explicitly, so it works whether or not "Automatically expose new tables" is turned on.
 3. In the **Authentication** settings, open the **Email** provider and keep it on.
    - **Confirm email**: Supabase's built-in email sender only sends a few emails per hour (the dashboard's auth rate-limit settings show your project's number). With confirmation on, a whole class signing up at once would hit that limit. Two choices:
