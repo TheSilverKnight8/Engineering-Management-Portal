@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CalendarDays, ExternalLink, Flag, Megaphone, RotateCcw, ShieldOff, Trash2 } from 'lucide-react';
+import { CalendarDays, CircleCheck, ExternalLink, Flag, Megaphone, RotateCcw, ShieldOff, Trash2, Wrench } from 'lucide-react';
 import { useAuth, useMe } from '../../lib/auth';
 import { useRoster, keys } from '../../lib/queries';
 import { canModerate, type Announcement, type Post } from '../../lib/types';
@@ -20,9 +21,17 @@ const SOURCE = {
   announcement: { table: 'announcements', key: keys.announcements, noun: 'announcement' },
 } as const;
 
-// One card for posts and announcements. Announcements that the database adds
-// when someone joins (joined_id) show that person's current name.
-export function FeedCard({ entry, onReport, onView }: { entry: FeedItem; onReport: () => void; onView: (url: string) => void }) {
+const AUTO_CHIPS = {
+  joined: { tone: 'bg-accent/12 text-accent', icon: Megaphone, label: 'Announcement' },
+  maintenance: { tone: 'bg-warn/15 text-warn', icon: Wrench, label: 'Maintenance' },
+  fixed: { tone: 'bg-ok/12 text-ok', icon: CircleCheck, label: 'Fixed' },
+} as const;
+
+// One card for posts and announcements. The database adds some announcements
+// on its own (kind other than "post"): those show the app as the author. A
+// "joined" announcement shows the member's current name; maintenance and fixed
+// announcements link to the tool in the Shop.
+export function FeedCard({ entry, onReport, onView, isNew = false }: { entry: FeedItem; onReport: () => void; onView: (url: string) => void; isNew?: boolean }) {
   const me = useMe();
   const { profile } = useAuth();
   const roster = useRoster();
@@ -32,7 +41,9 @@ export function FeedCard({ entry, onReport, onView }: { entry: FeedItem; onRepor
   const { item } = entry;
   const src = SOURCE[entry.source];
   const Noun = src.noun[0].toUpperCase() + src.noun.slice(1);
+  const auto = entry.source === 'announcement' && entry.item.kind !== 'post' ? entry.item.kind : null;
   const joined = entry.source === 'announcement' && entry.item.joined_id ? (roster.byId.get(entry.item.joined_id)?.full_name ?? 'A new member') : null;
+  const itemId = entry.source === 'announcement' ? entry.item.item_id : null;
   const author = roster.byId.get(item.author_id ?? '');
   const mine = item.author_id === me.id;
   const isMod = canModerate(profile);
@@ -85,13 +96,18 @@ export function FeedCard({ entry, onReport, onView }: { entry: FeedItem; onRepor
       )}
       <div className="p-4 sm:p-5">
         <div className="mb-3 flex items-center gap-3">
-          {joined ? <AppMark size={36} /> : <Avatar name={author?.full_name ?? '?'} size={36} />}
+          {auto ? <AppMark size={36} /> : <Avatar name={author?.full_name ?? '?'} size={36} />}
           <div className="min-w-0 flex-1 leading-tight">
-            <div className="truncate text-sm font-semibold">{joined ? APP_NAME : (author?.full_name ?? 'Former member')}</div>
-            <div className="text-xs text-muted">{relativeTime(item.created_at)}</div>
+            <div className="truncate text-sm font-semibold">{auto ? APP_NAME : (author?.full_name ?? 'Former member')}</div>
+            <div className="flex items-center gap-1.5 text-xs text-muted">
+              {relativeTime(item.created_at)}
+              {isNew && <span className="rounded-full bg-accent px-1.5 py-px text-[0.625rem] font-semibold uppercase tracking-wide text-on-accent">New</span>}
+            </div>
           </div>
           {entry.source === 'post' ? (
             <KindChip tone={POST_KIND_META[entry.item.kind].tone} icon={POST_KIND_META[entry.item.kind].icon} label={POST_KIND_META[entry.item.kind].label} />
+          ) : auto ? (
+            <KindChip {...AUTO_CHIPS[auto]} />
           ) : (
             <KindChip tone="bg-accent/12 text-accent" icon={Megaphone} label="Announcement" />
           )}
@@ -114,6 +130,13 @@ export function FeedCard({ entry, onReport, onView }: { entry: FeedItem; onRepor
           </button>
         )}
 
+        {itemId && (
+          <Link to={`/shop/${itemId}`} className="mt-3 flex items-center gap-3 rounded-xl border border-line bg-raised p-3 transition hover:border-navy/40">
+            <Wrench className="size-4 shrink-0 text-muted" />
+            <span className="min-w-0 flex-1 truncate text-sm font-medium text-navy">Open the tool in the Shop</span>
+          </Link>
+        )}
+
         {item.link_url && (
           <a href={item.link_url} target="_blank" rel="noreferrer noopener" className="mt-3 flex items-center gap-3 rounded-xl border border-line bg-raised p-3 transition hover:border-navy/40">
             <ExternalLink className="size-4 shrink-0 text-muted" />
@@ -134,7 +157,7 @@ export function FeedCard({ entry, onReport, onView }: { entry: FeedItem; onRepor
           </div>
         )}
 
-        {(isMod || mine || !joined) && (
+        {(isMod || mine || !auto) && (
           <div className="mt-3 flex flex-wrap items-center justify-end gap-1 border-t border-line pt-2.5">
             {isMod &&
               (item.removed_at ? (
@@ -157,7 +180,7 @@ export function FeedCard({ entry, onReport, onView }: { entry: FeedItem; onRepor
               </Button>
             ) : (
               !item.removed_at &&
-              !joined && (
+              !auto && (
                 <Button size="sm" variant="ghost" onClick={onReport}>
                   <Flag className="size-4" />
                   Report
