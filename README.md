@@ -12,7 +12,7 @@ It runs on free tiers: Supabase (database, sign-in, image storage) and GitHub Pa
 | Tool picker | Optional questions (material, job, precision, size). Results update as you answer, say why each tool fits or does not, and show how many units are free in the shop. Answers are in the URL, so results can be shared. | Repo (`src/content`) |
 | Tool library and entries | Every tool with illustration, PPE, at-a-glance specs, designed / not designed for, safety rules, operation steps, a one-step-at-a-time view for phones, video slots, and graphics. Text is the ASD-STE100 content from the first Shop Manual, unchanged. | Repo |
 | Learn | Safety (PPE table by tool, study guide sections, rules by tool), safety practice questions, practice projects, materials, Simplified Technical English. | Repo |
-| Tool Safety Checkpoint | The safety test, taken in the app. The database grades it (exact answers, and keywords for written answers); 100% passes. One attempt every 24 hours, and the test is done once passed. Students see which questions they missed, not the answers. Teachers and the owner see a pass log with every attempt and can mark an attempt as passed. Everyone sees a "Safety passed" tag on the roster. | Supabase |
+| Tool Safety Checkpoint | The safety test, taken in the app. The database grades it (exact answers, and keywords for written answers); 100% passes. One attempt every 24 hours, and the test is done once passed. Students see which questions they missed, not the answers. Teachers and the owner see a pass log with every attempt, read each answer next to the key, change the points on any question (the score and pass update), or mark a whole attempt as passed. Everyone sees a "Safety passed" tag on the roster. | Supabase |
 | Shop inventory | Every tool unit, status (operational / needs maintenance), checkouts for a time window. Overlapping checkouts are refused by the database. Anyone can edit; every change goes in a changelog nobody can edit. | Supabase |
 | Project groups | Groups with a text channel each. New messages arrive live. | Supabase |
 | Posts | Papers, competition opportunities, and builds, with up to 4 photos. | Supabase |
@@ -96,6 +96,7 @@ The questions and answer key are **not** in this repository, because the reposit
 - Written questions are graded by keyword groups: each group is worth 1 point if the answer contains any of its keywords (capital letters do not matter).
 - **Export** downloads the whole test, photos included, as one file. Keep a copy somewhere safe: it is the only backup. **Import** replaces the whole test with a file in one step; past attempts and passes are kept.
 - Photos are compressed in the browser and stored in the same `post-images` bucket as post photos.
+- In the **Pass log**, open an attempt to read every answer. Each question has points buttons: a teacher can give credit for a written answer that was right in other words, or take it away. The automatic points are kept and shown next to the change. At 100% the attempt passes; lowering a question takes the pass away again, unless the whole attempt was marked as passed.
 
 ## Editing the content
 
@@ -138,7 +139,7 @@ Nothing in the app needs a paid plan.
 | Review reports, remove and restore posts and messages | | ✓ | ✓ | ✓ |
 | Post announcements | | | ✓ | ✓ |
 | Take the safety test | ✓ | ✓ | ✓ | ✓ |
-| Edit the safety test, see the pass log, mark an attempt as passed | | | ✓ | ✓ |
+| Edit the safety test, see the pass log, change points on attempts, mark an attempt as passed | | | ✓ | ✓ |
 | See and change the join code | | | ✓ | ✓ |
 | Set roles and mods, remove members | | | | ✓ |
 | Change the app and its content | | | | ✓ (through the repo) |

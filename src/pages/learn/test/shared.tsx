@@ -82,21 +82,8 @@ export function QuestionInput({ q, options, value, onChange }: { q: TestQuestion
   );
 }
 
-/**
- * The questions a student missed, without the correct answers. Teachers also
- * see the student's answers (pass `responses`) to decide on a pass.
- */
-export function MissedList({
-  results,
-  images,
-  responses,
-  rubrics,
-}: {
-  results: TestResult[];
-  images: Map<string, string | null>;
-  responses?: Record<string, string>;
-  rubrics?: Map<string, string | null>;
-}) {
+/** The questions a student missed, without the correct answers. Teachers use AttemptReview instead. */
+export function MissedList({ results, images }: { results: TestResult[]; images: Map<string, string | null> }) {
   const missed = results.filter((r) => r.earned < r.possible);
   if (missed.length === 0) return null;
   return (
@@ -116,8 +103,6 @@ export function MissedList({
                   {r.earned} of {r.possible} points
                 </div>
               )}
-              {responses && <div className="mt-1 whitespace-pre-wrap rounded-lg bg-raised px-2.5 py-1.5 text-sm">{responses[r.question_id] || '(no answer)'}</div>}
-              {rubrics?.get(r.question_id) && <div className="mt-1 text-xs text-muted">Full answer covers: {rubrics.get(r.question_id)}</div>}
             </div>
           </li>
         );
