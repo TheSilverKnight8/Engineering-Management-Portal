@@ -17,7 +17,7 @@ It runs on free tiers: Supabase (database, sign-in, image storage) and GitHub Pa
 | Project groups | Groups with a text channel each. New messages arrive live. | Supabase |
 | Posts | Papers, competition opportunities, and builds, with up to 4 photos. | Supabase |
 | Roster | Everyone in the class with their role, date joined, and project groups. Search by name or filter by group. Your own groups also show on your Profile. | Supabase |
-| Announcements | Teachers and the owner post news for the class (title, text, link, up to 4 photos). The database also posts a welcome announcement each time someone joins. | Supabase |
+| Announcements | Teachers and the owner post news for the class (title, text, link, up to 4 photos). The database also posts one when someone joins, when a tool is marked as needing maintenance, and when it is marked operational again. A bell shows how many are new since you last opened Announcements. | Supabase |
 | Moderation | Anyone can report a post, announcement, or message. Teachers and mod students review reports and remove or restore content. | Supabase |
 | Developer page | Owner only: set teacher role and mod students, remove members, change the join code. | Supabase |
 

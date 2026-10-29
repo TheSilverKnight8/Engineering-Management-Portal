@@ -106,11 +106,19 @@ export interface Post {
   removed_by: string | null;
 }
 
-/** Posted by a teacher or the developer, or added by the database when someone joins (joined_id). */
+/**
+ * "post": written by a teacher or the developer. The database adds the others:
+ * "joined" when someone joins (joined_id), "maintenance" and "fixed" when a
+ * tool's status changes (item_id).
+ */
+export type AnnouncementKind = 'post' | 'joined' | 'maintenance' | 'fixed';
+
 export interface Announcement {
   id: string;
+  kind: AnnouncementKind;
   author_id: string | null;
   joined_id: string | null;
+  item_id: string | null;
   title: string | null;
   body: string | null;
   link_url: string | null;

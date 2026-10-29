@@ -1,12 +1,12 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
-import { BookOpen, GraduationCap, House, MessagesSquare, Search, ShieldCheck, Warehouse, Wrench, Settings, type LucideIcon } from 'lucide-react';
+import { Bell, BookOpen, GraduationCap, House, MessagesSquare, Search, ShieldCheck, Warehouse, Wrench, Settings, type LucideIcon } from 'lucide-react';
 import { AppMark } from '../graphics/Icons';
 import { CroswellLogo, CroswellMark } from '../graphics/Logo';
 import { APP_NAME, CLASS_NAME, SCHOOL_NAME } from '../config';
 import { useAuth } from '../lib/auth';
 import { canModerate } from '../lib/types';
-import { useReports } from '../lib/queries';
+import { useAnnouncementsLive, useReports, useUnreadAnnouncements } from '../lib/queries';
 import { Avatar, Kbd, cx } from './ui';
 import { SearchPalette } from './SearchPalette';
 
@@ -78,6 +78,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isMod = canModerate(profile);
   const reports = useReports(isMod);
   const openReports = (reports.data ?? []).filter((r) => !r.resolved_at).length;
+  const unread = useUnreadAnnouncements();
+  useAnnouncementsLive();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -116,14 +118,17 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </Link>
 
-        <button
-          onClick={() => setSearchOpen(true)}
-          className="mx-4 mb-3 flex h-10 items-center gap-2 rounded-xl border border-line bg-raised px-3 text-sm text-muted transition hover:text-ink"
-        >
-          <Search className="size-4" />
-          <span className="flex-1 text-left">Search</span>
-          <Kbd>Ctrl K</Kbd>
-        </button>
+        <div className="mx-4 mb-3 flex gap-2">
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-xl border border-line bg-raised px-3 text-sm text-muted transition hover:text-ink"
+          >
+            <Search className="size-4" />
+            <span className="flex-1 text-left">Search</span>
+            <Kbd>Ctrl K</Kbd>
+          </button>
+          {profile && <BellLink unread={unread} className="size-10 rounded-xl border border-line bg-raised" />}
+        </div>
 
         <nav className="flex-1 overflow-y-auto px-3 pb-4">
           {sections.map((s) => {
@@ -200,10 +205,10 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Phone: top bar */}
       <header className="sticky top-0 z-30 border-b border-line/70 bg-bg/80 pt-[env(safe-area-inset-top)] backdrop-blur-xl lg:hidden">
-        <div className="flex h-14 items-center gap-3 px-4">
-          <Link to="/" className="flex items-center gap-2.5">
+        <div className="flex h-14 items-center gap-1 px-4">
+          <Link to="/" className="flex min-w-0 items-center gap-2.5" aria-label={APP_NAME}>
             <AppMark size={30} />
-            <span className="whitespace-nowrap font-display text-[1.1875rem] uppercase leading-none tracking-wide">
+            <span className="whitespace-nowrap font-display text-[1.0625rem] uppercase leading-none tracking-wide max-[349px]:hidden min-[400px]:text-[1.1875rem]">
               {APP_NAME}
             </span>
           </Link>
@@ -211,6 +216,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <button onClick={() => setSearchOpen(true)} className="rounded-full p-2 text-muted hover:bg-raised hover:text-ink" aria-label="Search">
             <Search className="size-5" />
           </button>
+          {profile && <BellLink unread={unread} className="size-9 rounded-full hover:bg-raised" />}
           {isMod && (
             <Link to="/mod" className="relative rounded-full p-2 text-muted hover:bg-raised hover:text-ink" aria-label="Moderation">
               <ShieldCheck className="size-5" />
@@ -218,7 +224,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </Link>
           )}
           {profile && (
-            <Link to="/me" aria-label="Your profile">
+            <Link to="/me" aria-label="Your profile" className="ml-1">
               <Avatar name={profile.full_name} size={32} />
             </Link>
           )}
@@ -262,5 +268,23 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <SearchPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
+  );
+}
+
+/** The alert bell: opens Announcements and shows how many are new. */
+function BellLink({ unread, className }: { unread: number; className?: string }) {
+  return (
+    <Link
+      to="/community/announcements"
+      className={cx('relative flex shrink-0 items-center justify-center text-muted transition hover:text-ink', className)}
+      aria-label={unread ? `Announcements, ${unread} new` : 'Announcements'}
+    >
+      <Bell className="size-5" />
+      {unread > 0 && (
+        <span className="absolute -right-1 -top-1 flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-danger px-1 text-[0.625rem] font-semibold text-bg ring-2 ring-bg">
+          {unread > 9 ? '9+' : unread}
+        </span>
+      )}
+    </Link>
   );
 }

@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
-import { useAnnouncements } from '../../lib/queries';
-import { canAnnounce } from '../../lib/types';
+import { keys, useAnnouncements, useAnnouncementsSeen } from '../../lib/queries';
+import { db } from '../../lib/supabase';
+import { canAnnounce, type Announcement } from '../../lib/types';
 import { PageHeader } from '../../components/PageHeader';
 import { Button, EmptyState, LoadingBlock } from '../../components/ui';
 import { CommunityTabs } from './CommunityTabs';
@@ -18,6 +20,22 @@ export default function Announcements() {
   const [reporting, setReporting] = useState<{ type: 'announcement'; id: string } | null>(null);
   const [viewing, setViewing] = useState<string | null>(null);
   const rows = announcements.data ?? [];
+  const qc = useQueryClient();
+  const seen = useAnnouncementsSeen();
+
+  // Opening this page clears the alert bell. Announcements that were new when
+  // the page opened keep a "New" tag until the member leaves the page.
+  const seenAtOpen = useRef<string | null>(null);
+  if (seenAtOpen.current === null && seen !== null) seenAtOpen.current = seen;
+  const seenLoaded = seen !== null;
+  useEffect(() => {
+    if (!announcements.data || !seenLoaded) return;
+    void db()
+      .rpc('mark_announcements_seen')
+      .then(() => qc.invalidateQueries({ queryKey: keys.announcementsSeen }));
+  }, [announcements.data, seenLoaded, qc]);
+  const isNew = (a: Announcement) =>
+    !!seenAtOpen.current && a.kind !== 'joined' && a.author_id !== profile?.id && new Date(a.created_at) > new Date(seenAtOpen.current);
 
   // Links like /community/announcements#<id> from the moderation page scroll to that announcement.
   useEffect(() => {
@@ -30,7 +48,7 @@ export default function Announcements() {
       <PageHeader
         eyebrow="Community"
         title="Announcements"
-        subtitle="News for the class from the teachers, and who joined the portal."
+        subtitle="News from the teachers, tools that need maintenance or are fixed, and who joined the portal."
         actions={
           mayPost && (
             <Button variant="primary" onClick={() => setComposing(true)}>
@@ -48,12 +66,12 @@ export default function Announcements() {
         <LoadingBlock />
       ) : rows.length === 0 ? (
         <EmptyState title="No announcements yet" action={mayPost && <Button onClick={() => setComposing(true)}>Write the first one</Button>}>
-          Teachers post news for the class here. New members show here when they join.
+          Teachers post news for the class here. Tools that need maintenance or are fixed, and new members, also show here.
         </EmptyState>
       ) : (
         <div className="mx-auto max-w-2xl space-y-4">
           {rows.map((a) => (
-            <FeedCard key={a.id} entry={{ source: 'announcement', item: a }} onReport={() => setReporting({ type: 'announcement', id: a.id })} onView={setViewing} />
+            <FeedCard key={a.id} entry={{ source: 'announcement', item: a }} isNew={isNew(a)} onReport={() => setReporting({ type: 'announcement', id: a.id })} onView={setViewing} />
           ))}
         </div>
       )}

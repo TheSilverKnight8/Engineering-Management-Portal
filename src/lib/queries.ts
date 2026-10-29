@@ -19,6 +19,7 @@ export const keys = {
   messages: (groupId: string) => ['messages', groupId] as const,
   posts: ['posts'] as const,
   announcements: ['announcements'] as const,
+  announcementsSeen: ['announcement_reads'] as const,
   reports: ['reports'] as const,
   joinCode: ['join_code'] as const,
   safetyTest: ['safety_test'] as const,
@@ -171,6 +172,45 @@ export function useAnnouncements() {
     enabled: live,
     queryFn: () => run<Announcement[]>(db().from('announcements').select('*').order('created_at', { ascending: false }).limit(100)),
   });
+}
+
+/** Refreshes announcements as soon as a new one is added, so the alert bell updates live. */
+export function useAnnouncementsLive() {
+  const live = useLive();
+  const qc = useQueryClient();
+  useEffect(() => {
+    if (!live) return;
+    const channel = db()
+      .channel('announcements')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'announcements' }, () => {
+        void qc.invalidateQueries({ queryKey: keys.announcements });
+      })
+      .subscribe();
+    return () => {
+      void db().removeChannel(channel);
+    };
+  }, [live, qc]);
+}
+
+/** When the signed-in member last opened Announcements. Before the first visit, the day they joined. */
+export function useAnnouncementsSeen() {
+  const live = useLive();
+  const { profile } = useAuth();
+  const q = useQuery({
+    queryKey: keys.announcementsSeen,
+    enabled: live,
+    queryFn: () => run<{ seen_at: string }[]>(db().from('announcement_reads').select('seen_at')),
+  });
+  return q.data ? (q.data[0]?.seen_at ?? profile?.created_at ?? null) : null;
+}
+
+/** Announcements for the alert bell: new since the last visit, not written by me, and not "joined". */
+export function useUnreadAnnouncements() {
+  const { profile } = useAuth();
+  const announcements = useAnnouncements();
+  const seen = useAnnouncementsSeen();
+  if (!seen || !profile) return 0;
+  return (announcements.data ?? []).filter((a) => a.kind !== 'joined' && !a.removed_at && a.author_id !== profile.id && new Date(a.created_at) > new Date(seen)).length;
 }
 
 export function useReports(enabled: boolean) {
