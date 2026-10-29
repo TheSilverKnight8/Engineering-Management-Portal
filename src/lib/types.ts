@@ -185,6 +185,8 @@ export interface TestResult {
   kind: 'choice' | 'written';
   earned: number;
   possible: number;
+  /** The automatic points, kept when a teacher changes `earned`. */
+  auto_earned?: number;
 }
 
 export interface TestAttempt {
@@ -199,4 +201,7 @@ export interface TestAttempt {
   passed: boolean;
   passed_by: string | null;
   passed_by_teacher_at: string | null;
+  /** The last teacher or developer who changed a question's points. */
+  adjusted_by: string | null;
+  adjusted_at: string | null;
 }

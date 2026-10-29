@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ChevronDown, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../../lib/auth';
 import { keys, useAllAttempts, useRoster, useSafetyTest, useTestKeys } from '../../../lib/queries';
-import { canManageTest, type Profile, type TestAttempt } from '../../../lib/types';
+import { canManageTest, type Profile, type TestAttempt, type TestKey, type TestQuestion } from '../../../lib/types';
 import { db } from '../../../lib/supabase';
 import { friendlyError } from '../../../lib/errors';
 import { useToast } from '../../../lib/toast';
@@ -11,7 +11,8 @@ import { dayLabel, formatDate, formatTime } from '../../../lib/time';
 import { PageHeader } from '../../../components/PageHeader';
 import { Avatar, Button, Card, Chip, EmptyState, LoadingBlock, Segmented, cx } from '../../../components/ui';
 import NotFound from '../../NotFound';
-import { MissedList, ScoreLine } from './shared';
+import { ScoreLine } from './shared';
+import { AttemptReview } from './AttemptReview';
 
 type Filter = 'all' | 'passed' | 'not';
 
@@ -32,8 +33,7 @@ export default function SafetyLog() {
     for (const a of attempts.data ?? []) m.set(a.user_id, [...(m.get(a.user_id) ?? []), a]);
     return m;
   }, [attempts.data]);
-  const images = useMemo(() => new Map((test.data ?? []).flatMap((s) => s.questions.map((q) => [q.id, q.image_path] as const))), [test.data]);
-  const rubrics = useMemo(() => new Map((testKeys.data ?? []).map((k) => [k.question_id, k.rubric])), [testKeys.data]);
+  const questions = useMemo(() => new Map((test.data ?? []).flatMap((s) => s.questions.map((q) => [q.id, q] as const))), [test.data]);
 
   if (!manager) return <NotFound />;
 
@@ -43,7 +43,7 @@ export default function SafetyLog() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <PageHeader back={{ to: '/learn/safety/test', label: 'Safety test' }} eyebrow="Teachers" title="Pass log" subtitle="Who passed the Tool Safety Checkpoint, and every attempt with its written answers." />
+      <PageHeader back={{ to: '/learn/safety/test', label: 'Safety test' }} eyebrow="Teachers" title="Pass log" subtitle="Who passed the Tool Safety Checkpoint and every attempt. Open an attempt to read the answers and change the points on any question." />
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted">
           {passedCount} of {everyone.length} passed
@@ -73,8 +73,8 @@ export default function SafetyLog() {
               attempts={byUser.get(p.id) ?? []}
               open={open === p.id}
               onToggle={() => setOpen(open === p.id ? null : p.id)}
-              images={images}
-              rubrics={rubrics}
+              questions={questions}
+              keysById={testKeys.byId}
             />
           ))}
         </Card>
@@ -88,15 +88,15 @@ function PersonRow({
   attempts,
   open,
   onToggle,
-  images,
-  rubrics,
+  questions,
+  keysById,
 }: {
   person: Profile;
   attempts: TestAttempt[];
   open: boolean;
   onToggle: () => void;
-  images: Map<string, string | null>;
-  rubrics: Map<string, string | null>;
+  questions: Map<string, TestQuestion>;
+  keysById: Map<string, TestKey>;
 }) {
   const last = attempts[0];
   const byTeacher = attempts.some((a) => a.passed_by);
@@ -125,7 +125,7 @@ function PersonRow({
       {open && attempts.length > 0 && (
         <div className="space-y-3 px-4 pb-4">
           {attempts.map((a) => (
-            <AttemptCard key={a.id} attempt={a} personPassed={!!person.safety_passed_at} images={images} rubrics={rubrics} />
+            <AttemptCard key={a.id} attempt={a} personPassed={!!person.safety_passed_at} questions={questions} keysById={keysById} />
           ))}
         </div>
       )}
@@ -133,10 +133,10 @@ function PersonRow({
   );
 }
 
-function AttemptCard({ attempt, personPassed, images, rubrics }: { attempt: TestAttempt; personPassed: boolean; images: Map<string, string | null>; rubrics: Map<string, string | null> }) {
+function AttemptCard({ attempt, personPassed, questions, keysById }: { attempt: TestAttempt; personPassed: boolean; questions: Map<string, TestQuestion>; keysById: Map<string, TestKey> }) {
   const qc = useQueryClient();
   const toast = useToast();
-  const [showAnswers, setShowAnswers] = useState(!attempt.passed);
+  const [view, setView] = useState<'hidden' | 'missed' | 'all'>(attempt.passed ? 'hidden' : 'missed');
   const roster = useRoster();
   const at = new Date(attempt.submitted_at);
 
@@ -175,14 +175,18 @@ function AttemptCard({ attempt, personPassed, images, rubrics }: { attempt: Test
           {attempt.passed_by_teacher_at ? ` on ${formatDate(attempt.passed_by_teacher_at)}` : ''}.
         </p>
       )}
-      {attempt.results.some((r) => r.earned < r.possible) && (
-        <>
-          <button onClick={() => setShowAnswers((s) => !s)} className="mt-2 text-sm font-medium text-navy">
-            {showAnswers ? 'Hide missed questions' : 'Show missed questions'}
-          </button>
-          {showAnswers && <MissedList results={attempt.results} images={images} responses={attempt.responses} rubrics={rubrics} />}
-        </>
+      {attempt.adjusted_by && (
+        <p className="mt-1 text-xs text-muted">
+          Points changed by {roster.byId.get(attempt.adjusted_by)?.full_name ?? 'a former member'}
+          {attempt.adjusted_at ? ` on ${formatDate(attempt.adjusted_at)}` : ''}.
+        </p>
       )}
+      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm font-medium text-navy">
+        {view !== 'missed' && <button onClick={() => setView('missed')}>Show missed questions</button>}
+        {view !== 'all' && <button onClick={() => setView('all')}>Show all answers</button>}
+        {view !== 'hidden' && <button onClick={() => setView('hidden')}>Hide answers</button>}
+      </div>
+      {view !== 'hidden' && <AttemptReview attempt={attempt} questions={questions} keysById={keysById} onlyMissed={view === 'missed'} />}
     </div>
   );
 }
