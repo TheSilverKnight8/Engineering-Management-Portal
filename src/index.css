@@ -273,3 +273,24 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Printing (the pass list's print sheet): black on white, without on-screen buttons. */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  :root {
+    color-scheme: light !important;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-sheet {
+    padding: 0 !important;
+  }
+}
+

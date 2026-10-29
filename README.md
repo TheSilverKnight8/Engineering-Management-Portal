@@ -96,6 +96,7 @@ The questions and answer key are **not** in this repository, because the reposit
 - Written questions are graded by keyword groups: each group is worth 1 point if the answer contains any of its keywords (capital letters do not matter).
 - **Export** downloads the whole test, photos included, as one file. Keep a copy somewhere safe: it is the only backup. **Import** replaces the whole test with a file in one step; past attempts and passes are kept.
 - Photos are compressed in the browser and stored in the same `post-images` bucket as post photos.
+- **Print list** in the Pass log opens a printable list of everyone who passed, A to Z by last name, with class period and date passed. The print dialog opens on its own; choose **Save as PDF** there for a PDF.
 - In the **Pass log**, open an attempt to read every answer. Each question has points buttons: a teacher can give credit for a written answer that was right in other words, or take it away. The automatic points are kept and shown next to the change. At 100% the attempt passes; lowering a question takes the pass away again, unless the whole attempt was marked as passed.
 
 ## Editing the content
