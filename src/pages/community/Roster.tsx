@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, ShieldCheck } from 'lucide-react';
 import { useGroupMembers, useGroups, useRoster } from '../../lib/queries';
 import { formatDate } from '../../lib/time';
 import { PageHeader } from '../../components/PageHeader';
-import { Avatar, Card, EmptyState, Input, LoadingBlock, RoleBadges, Select } from '../../components/ui';
+import { Avatar, Card, Chip, EmptyState, Input, LoadingBlock, RoleBadges, Select } from '../../components/ui';
 import { CommunityTabs } from './CommunityTabs';
 import { GroupTags, useGroupsByMember } from './GroupTags';
 
@@ -66,6 +66,11 @@ export default function Roster() {
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <span className="font-semibold">{p.full_name}</span>
                       <RoleBadges role={p.role} isMod={p.is_mod} isDev={p.is_dev} />
+                      {p.safety_passed_at && (
+                        <Chip tone="ok" icon={<ShieldCheck className="size-3.5" />}>
+                          Safety passed
+                        </Chip>
+                      )}
                     </div>
                     <div className="mt-0.5 text-xs text-muted">Joined {formatDate(p.created_at)}</div>
                     {theirGroups.length > 0 && (

@@ -25,6 +25,7 @@ const pages: Result[] = [
   { id: 'p-shop', title: 'Shop inventory', subtitle: 'Status and checkouts', to: '/shop', kind: 'Page' },
   { id: 'p-log', title: 'Inventory changelog', subtitle: 'Who changed what', to: '/shop/log', kind: 'Page' },
   { id: 'p-safety', title: 'Safety', subtitle: 'PPE, rules, and the safety checkpoint', to: '/learn/safety', kind: 'Page' },
+  { id: 'p-safety-test', title: 'Tool Safety Checkpoint', subtitle: 'Take the safety test', to: '/learn/safety/test', kind: 'Page' },
   { id: 'p-practice', title: 'Safety practice', subtitle: 'Practice questions from the tool entries', to: '/learn/safety/practice', kind: 'Page' },
   { id: 'p-ste', title: 'Simplified Technical English', subtitle: 'ASD-STE100', to: '/learn/ste', kind: 'Page' },
   { id: 'p-posts', title: 'Posts', subtitle: 'Papers, competitions, and builds', to: '/community', kind: 'Page' },

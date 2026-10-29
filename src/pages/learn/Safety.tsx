@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { ChevronDown, ClipboardCheck, ExternalLink, FileText, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ChevronDown, ClipboardCheck, ClipboardList, Clock, FileText, PencilLine, ShieldCheck } from 'lucide-react';
 import { safetyCheckpoint, studyGuide } from '../../content/safety';
 import { tools } from '../../content/tools';
 import { ppeLabels } from '../../content/catalog';
@@ -9,6 +9,11 @@ import { NoGlovesIcon, PpeIcon } from '../../graphics/Icons';
 import { ToolArt } from '../../graphics/ToolArt';
 import { PageHeader } from '../../components/PageHeader';
 import { ButtonLink, Card, SectionTitle, cx } from '../../components/ui';
+import { useAuth } from '../../lib/auth';
+import { useMyAttempts } from '../../lib/queries';
+import { canManageTest } from '../../lib/types';
+import { dayLabel, formatDate, formatTime } from '../../lib/time';
+import { nextAttemptAt } from './test/shared';
 
 // PPE columns, in the order they first appear across the tool entries.
 const ppeColumns = Array.from(new Set(tools.flatMap((t) => t.ppe))) as PpeId[];
@@ -19,27 +24,7 @@ export default function Safety() {
       <PageHeader back={{ to: '/learn', label: 'Learn' }} eyebrow="Safety" title="Shop safety" subtitle="Know the PPE and the rules for each tool before you use it." />
 
       <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-        <div className="overflow-hidden rounded-2xl border border-warn/40 bg-surface shadow-card">
-          <div className="stripes stripes-tl stripes-sm mt-5" aria-hidden />
-          <div className="p-5 sm:p-6">
-            <div className="mb-3 flex items-center gap-2 text-warn">
-              <ShieldCheck className="size-5" />
-              <span className="label-caps">Required for shop access</span>
-            </div>
-            <h2 className="text-2xl font-bold">{safetyCheckpoint.title}</h2>
-            <p className="mt-1.5 text-[0.9375rem] text-muted">{safetyCheckpoint.requirement}</p>
-            <a
-              href={safetyCheckpoint.url}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl bg-accent px-4 py-2.5 font-display uppercase leading-tight tracking-[0.06em] text-on-accent transition hover:brightness-105"
-            >
-              Open the checkpoint and practice material
-              <ExternalLink className="size-4" />
-            </a>
-            <p className="mt-3 text-xs text-muted">Opens the shop’s safety checkpoint site.</p>
-          </div>
-        </div>
+        <CheckpointCard />
 
         <Card className="flex flex-col p-5 sm:p-6">
           <span className="mb-3 flex size-11 items-center justify-center rounded-xl bg-ok/12 text-ok">
@@ -135,6 +120,60 @@ export default function Safety() {
           ))}
         </div>
       </section>
+    </div>
+  );
+}
+
+// The Tool Safety Checkpoint, taken in the app. Shows whether you passed or
+// when you can try again; teachers and the developer also get the log and editor.
+function CheckpointCard() {
+  const { profile } = useAuth();
+  const mine = useMyAttempts();
+  const next = nextAttemptAt(mine.data);
+  const passed = profile?.safety_passed_at;
+  return (
+    <div className="overflow-hidden rounded-2xl border border-warn/40 bg-surface shadow-card">
+      <div className="stripes stripes-tl stripes-sm mt-5" aria-hidden />
+      <div className="p-5 sm:p-6">
+        <div className="mb-3 flex items-center gap-2 text-warn">
+          <ShieldCheck className="size-5" />
+          <span className="label-caps">Required for shop access</span>
+        </div>
+        <h2 className="text-2xl font-bold">{safetyCheckpoint.title}</h2>
+        <p className="mt-1.5 text-[0.9375rem] text-muted">{safetyCheckpoint.requirement} One attempt every 24 hours.</p>
+        {passed ? (
+          <p className="mt-4 flex items-center gap-2 font-medium text-ok">
+            <ShieldCheck className="size-5" />
+            You passed on {formatDate(passed)}.
+          </p>
+        ) : next ? (
+          <p className="mt-4 flex items-center gap-2 font-medium">
+            <Clock className="size-5 text-warn" />
+            Next attempt: {dayLabel(next)} at {formatTime(next)}
+          </p>
+        ) : null}
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <Link
+            to="/learn/safety/test"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-accent px-4 py-2.5 font-display uppercase leading-tight tracking-[0.06em] text-on-accent transition hover:brightness-105"
+          >
+            {passed ? 'See your result' : next ? 'See your last attempt' : 'Take the test'}
+            <ArrowRight className="size-4" />
+          </Link>
+          {canManageTest(profile) && (
+            <>
+              <ButtonLink to="/learn/safety/log">
+                <ClipboardList className="size-4" />
+                Pass log
+              </ButtonLink>
+              <ButtonLink to="/learn/safety/test/edit">
+                <PencilLine className="size-4" />
+                Edit test
+              </ButtonLink>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

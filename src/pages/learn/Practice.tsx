@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { Check, ExternalLink, RotateCcw, X } from 'lucide-react';
+import { ArrowRight, Check, RotateCcw, X } from 'lucide-react';
 import { ppeLabels } from '../../content/catalog';
-import { safetyCheckpoint } from '../../content/safety';
 import type { PpeId } from '../../content/types';
 import { PpeIcon } from '../../graphics/Icons';
 import { ToolArt } from '../../graphics/ToolArt';
@@ -42,9 +41,9 @@ export default function Practice() {
               <RotateCcw className="size-4" />
               New round
             </Button>
-            <a href={safetyCheckpoint.url} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-xl border border-line bg-surface px-4 font-display uppercase tracking-[0.06em] hover:bg-raised">
-              Official checkpoint <ExternalLink className="size-4" />
-            </a>
+            <Link to="/learn/safety/test" className="inline-flex h-11 items-center gap-2 rounded-xl border border-line bg-surface px-4 font-display uppercase tracking-[0.06em] hover:bg-raised">
+              Official checkpoint <ArrowRight className="size-4" />
+            </Link>
           </div>
         </Card>
       ) : (

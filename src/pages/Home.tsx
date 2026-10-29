@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowRight, ExternalLink, Hammer, MessagesSquare, ShieldCheck, Sparkles, TriangleAlert, Users, Warehouse } from 'lucide-react';
+import { ArrowRight, Hammer, MessagesSquare, ShieldCheck, Sparkles, TriangleAlert, Users, Warehouse } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { useActiveCheckouts, useGroupMembers, useGroups, useInventory, useLive, useLog, usePosts, useRoster } from '../lib/queries';
 import { availability, checkoutState } from '../lib/shop';
@@ -287,9 +287,9 @@ function ToolStrip() {
           <div className="font-semibold">{safetyCheckpoint.title}</div>
           <div className="text-sm text-muted">{safetyCheckpoint.requirement}</div>
         </div>
-        <a href={safetyCheckpoint.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">
-          Open the checkpoint <ExternalLink className="size-4" />
-        </a>
+        <Link to="/learn/safety/test" className="inline-flex items-center gap-1.5 text-sm font-medium text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">
+          Open the checkpoint <ArrowRight className="size-4" />
+        </Link>
       </Card>
       <div>
         <SectionTitle action={<Link to="/tools" className="text-sm text-navy underline decoration-accent/70 decoration-2 underline-offset-4 hover:decoration-accent">All tools</Link>}>Tools in the shop</SectionTitle>
