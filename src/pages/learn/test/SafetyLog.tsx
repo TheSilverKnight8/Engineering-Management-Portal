@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ChevronDown, ShieldCheck } from 'lucide-react';
+import { ChevronDown, Printer, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../../lib/auth';
 import { keys, useAllAttempts, useRoster, useSafetyTest, useTestKeys } from '../../../lib/queries';
 import { canManageTest, type Profile, type TestAttempt, type TestKey, type TestQuestion } from '../../../lib/types';
@@ -9,7 +9,7 @@ import { friendlyError } from '../../../lib/errors';
 import { useToast } from '../../../lib/toast';
 import { dayLabel, formatDate, formatTime } from '../../../lib/time';
 import { PageHeader } from '../../../components/PageHeader';
-import { Avatar, Button, Card, Chip, EmptyState, LoadingBlock, Segmented, cx } from '../../../components/ui';
+import { Avatar, Button, ButtonLink, Card, Chip, EmptyState, LoadingBlock, Segmented, cx } from '../../../components/ui';
 import NotFound from '../../NotFound';
 import { ScoreLine } from './shared';
 import { AttemptReview } from './AttemptReview';
@@ -43,7 +43,18 @@ export default function SafetyLog() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <PageHeader back={{ to: '/learn/safety/test', label: 'Safety test' }} eyebrow="Teachers" title="Pass log" subtitle="Who passed the Tool Safety Checkpoint and every attempt. Open an attempt to read the answers and change the points on any question." />
+      <PageHeader
+        back={{ to: '/learn/safety/test', label: 'Safety test' }}
+        eyebrow="Teachers"
+        title="Pass log"
+        subtitle="Who passed the Tool Safety Checkpoint and every attempt. Open an attempt to read the answers and change the points on any question."
+        actions={
+          <ButtonLink to="/learn/safety/log/print" size="sm">
+            <Printer className="size-4" />
+            Print list
+          </ButtonLink>
+        }
+      />
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted">
           {passedCount} of {everyone.length} passed

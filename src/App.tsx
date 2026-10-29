@@ -24,6 +24,7 @@ const Safety = lazy(() => import('./pages/learn/Safety'));
 const SafetyTest = lazy(() => import('./pages/learn/test/SafetyTest'));
 const SafetyTestEditor = lazy(() => import('./pages/learn/test/SafetyTestEditor'));
 const SafetyLog = lazy(() => import('./pages/learn/test/SafetyLog'));
+const PassListPrint = lazy(() => import('./pages/learn/test/PassListPrint'));
 const Practice = lazy(() => import('./pages/learn/Practice'));
 const Projects = lazy(() => import('./pages/learn/Projects'));
 const ProjectEntry = lazy(() => import('./pages/learn/ProjectEntry'));
@@ -85,6 +86,7 @@ function Gate() {
             <Route path="/learn/safety/test" element={live(<SafetyTest />)} />
             <Route path="/learn/safety/test/edit" element={live(<SafetyTestEditor />)} />
             <Route path="/learn/safety/log" element={live(<SafetyLog />)} />
+            <Route path="/learn/safety/log/print" element={live(<PassListPrint />)} />
             <Route path="/learn/projects" element={<Projects />} />
             <Route path="/learn/projects/:slug" element={<ProjectEntry />} />
             <Route path="/learn/materials" element={<Materials />} />

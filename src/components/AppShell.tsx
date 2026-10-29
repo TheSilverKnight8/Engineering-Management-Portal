@@ -102,6 +102,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   const immersive = /^\/groups\/[^/]+$/.test(pathname);
   const isHome = pathname === '/';
 
+  // Print sheets are paper-only pages: no sidebar, tabs, or stripes.
+  if (pathname === '/learn/safety/log/print') return <>{children}</>;
+
   return (
     <div className="flex min-h-dvh flex-col lg:pl-[17rem]">
       {/* Computer: sidebar */}
