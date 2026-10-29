@@ -11,7 +11,8 @@ It runs on free tiers: Supabase (database, sign-in, image storage) and GitHub Pa
 | --- | --- | --- |
 | Tool picker | Optional questions (material, job, precision, size). Results update as you answer, say why each tool fits or does not, and show how many units are free in the shop. Answers are in the URL, so results can be shared. | Repo (`src/content`) |
 | Tool library and entries | Every tool with illustration, PPE, at-a-glance specs, designed / not designed for, safety rules, operation steps, a one-step-at-a-time view for phones, video slots, and graphics. Text is the ASD-STE100 content from the first Shop Manual, unchanged. | Repo |
-| Learn | Safety (checkpoint link, PPE table by tool, study guide sections, rules by tool), safety practice questions, practice projects, materials, Simplified Technical English. | Repo |
+| Learn | Safety (PPE table by tool, study guide sections, rules by tool), safety practice questions, practice projects, materials, Simplified Technical English. | Repo |
+| Tool Safety Checkpoint | The safety test, taken in the app. The database grades it (exact answers, and keywords for written answers); 100% passes. One attempt every 24 hours, and the test is done once passed. Students see which questions they missed, not the answers. Teachers and the owner see a pass log with every attempt and can mark an attempt as passed. Everyone sees a "Safety passed" tag on the roster. | Supabase |
 | Shop inventory | Every tool unit, status (operational / needs maintenance), checkouts for a time window. Overlapping checkouts are refused by the database. Anyone can edit; every change goes in a changelog nobody can edit. | Supabase |
 | Project groups | Groups with a text channel each. New messages arrive live. | Supabase |
 | Posts | Papers, competition opportunities, and builds, with up to 4 photos. | Supabase |
@@ -87,6 +88,15 @@ Two things to know:
 - GitHub turns off scheduled workflows in public repositories after 60 days with no commits. Summer break is close to that, so the workflow also commits a one-line date file (`.github/keepalive.txt`) if the last commit is more than 45 days old. During the school year it never commits.
 - If the project does pause anyway, Supabase keeps it for 90 days; restore it from the Supabase dashboard. Check the **Actions** tab after a long break to make sure the workflow is still on.
 
+## The safety test
+
+The questions and answer key are **not** in this repository, because the repository is public. They live only in the database and are edited in the app: **Learn > Safety > Edit test** (teachers and the owner).
+
+- Choice questions have one correct option (true/false is a choice with two options). Long option lists, like the photo questions, show as a menu.
+- Written questions are graded by keyword groups: each group is worth 1 point if the answer contains any of its keywords (capital letters do not matter).
+- **Export** downloads the whole test, photos included, as one file. Keep a copy somewhere safe: it is the only backup. **Import** replaces the whole test with a file in one step; past attempts and passes are kept.
+- Photos are compressed in the browser and stored in the same `post-images` bucket as post photos.
+
 ## Editing the content
 
 Only the owner edits these files (they are in the repo, so changes need a commit).
@@ -127,6 +137,8 @@ Nothing in the app needs a paid plan.
 | Post, make and join groups, message | ✓ | ✓ | ✓ | ✓ |
 | Review reports, remove and restore posts and messages | | ✓ | ✓ | ✓ |
 | Post announcements | | | ✓ | ✓ |
+| Take the safety test | ✓ | ✓ | ✓ | ✓ |
+| Edit the safety test, see the pass log, mark an attempt as passed | | | ✓ | ✓ |
 | See and change the join code | | | ✓ | ✓ |
 | Set roles and mods, remove members | | | | ✓ |
 | Change the app and its content | | | | ✓ (through the repo) |
@@ -135,7 +147,6 @@ These rules are enforced in the database (Row Level Security and checked functio
 
 ## Not built yet
 
-- Taking the safety test in the app and recording results. The safety section links to the current checkpoint and has practice questions; the test itself stays on the Google site for now.
 - Study guide content: waiting for the "Shop Floor Safety Study Guide" PDF to be added to the repo.
 
 ## Project layout

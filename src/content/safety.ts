@@ -4,9 +4,10 @@
 // When the PDF is in the repo, move its content into `items` for each section.
 // A section with no items shows as "coming from the study guide".
 
+// The checkpoint itself is taken in the app. Its questions and answer key are
+// written in the app's test editor and kept in the database, not in this repo.
 export const safetyCheckpoint = {
   title: 'Tool Safety Checkpoint',
-  url: 'https://sites.google.com/k12.hi.us/shop-floor-safety-checkpoint-2?usp=sharing',
   requirement: 'You must score 100% on the Tool Safety Checkpoint to earn shop access.',
 };
 

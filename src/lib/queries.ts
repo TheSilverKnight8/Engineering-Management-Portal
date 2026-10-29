@@ -6,7 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { db } from './supabase';
 import { useAuth } from './auth';
-import type { Announcement, Checkout, Group, GroupMember, InventoryItem, LogEntry, Message, Post, Profile, Report } from './types';
+import type { Announcement, Checkout, Group, GroupMember, InventoryItem, LogEntry, Message, Post, Profile, Report, TestAttempt, TestKey, TestQuestion, TestSection } from './types';
 
 export const keys = {
   roster: ['roster'] as const,
@@ -21,6 +21,9 @@ export const keys = {
   announcements: ['announcements'] as const,
   reports: ['reports'] as const,
   joinCode: ['join_code'] as const,
+  safetyTest: ['safety_test'] as const,
+  testKeys: ['test_keys'] as const,
+  attempts: (who: 'mine' | 'all') => ['test_attempts', who] as const,
 };
 
 /** True when signed in and in the class, so Supabase queries can run. */
@@ -190,3 +193,55 @@ export function useJoinCode(enabled: boolean) {
     },
   });
 }
+
+export type TestSectionWithQuestions = TestSection & { questions: TestQuestion[] };
+
+/** The safety test's sections and questions in order, without the answer key. */
+export function useSafetyTest() {
+  const live = useLive();
+  return useQuery({
+    queryKey: keys.safetyTest,
+    enabled: live,
+    queryFn: async (): Promise<TestSectionWithQuestions[]> => {
+      const [sections, questions] = await Promise.all([
+        run<TestSection[]>(db().from('test_sections').select('*').order('position')),
+        run<TestQuestion[]>(db().from('test_questions').select('*').order('position')),
+      ]);
+      return sections.map((s) => ({ ...s, questions: questions.filter((q) => q.section_id === s.id) }));
+    },
+  });
+}
+
+/** The answer key, by question id. The database only returns it to teachers and the developer. */
+export function useTestKeys(enabled: boolean) {
+  const live = useLive();
+  const q = useQuery({
+    queryKey: keys.testKeys,
+    enabled: live && enabled,
+    queryFn: () => run<TestKey[]>(db().from('test_keys').select('*')),
+  });
+  const byId = useMemo(() => new Map((q.data ?? []).map((k) => [k.question_id, k])), [q.data]);
+  return { ...q, byId };
+}
+
+/** The signed-in member's own attempts, newest first. */
+export function useMyAttempts() {
+  const live = useLive();
+  const { profile } = useAuth();
+  return useQuery({
+    queryKey: keys.attempts('mine'),
+    enabled: live && !!profile,
+    queryFn: () => run<TestAttempt[]>(db().from('test_attempts').select('*').eq('user_id', profile!.id).order('submitted_at', { ascending: false })),
+  });
+}
+
+/** Every attempt, newest first. Only teachers and the developer get rows. */
+export function useAllAttempts(enabled: boolean) {
+  const live = useLive();
+  return useQuery({
+    queryKey: keys.attempts('all'),
+    enabled: live && enabled,
+    queryFn: () => run<TestAttempt[]>(db().from('test_attempts').select('*').order('submitted_at', { ascending: false })),
+  });
+}
+

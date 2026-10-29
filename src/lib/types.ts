@@ -9,6 +9,8 @@ export interface Profile {
   is_mod: boolean;
   is_dev: boolean;
   created_at: string;
+  /** Set when the member passes the Tool Safety Checkpoint. */
+  safety_passed_at: string | null;
 }
 
 export type ToolStatus = 'operational' | 'needs_maintenance';
@@ -143,3 +145,58 @@ export interface Report {
 export const canModerate = (p: Profile | null | undefined) => !!p && (p.role === 'teacher' || p.is_mod || p.is_dev);
 export const canSeeJoinCode = (p: Profile | null | undefined) => !!p && (p.role === 'teacher' || p.is_dev);
 export const canAnnounce = (p: Profile | null | undefined) => !!p && (p.role === 'teacher' || p.is_dev);
+/** Edit the safety test, read every attempt, and mark attempts as passed. */
+export const canManageTest = (p: Profile | null | undefined) => !!p && (p.role === 'teacher' || p.is_dev);
+
+// The Tool Safety Checkpoint (supabase/migrations/0006_safety_test.sql).
+export interface TestSection {
+  id: string;
+  position: number;
+  title: string;
+  description: string | null;
+}
+
+export interface TestQuestion {
+  id: string;
+  section_id: string;
+  position: number;
+  kind: 'choice' | 'written';
+  prompt: string;
+  image_path: string | null;
+  options: string[];
+}
+
+export interface KeywordGroup {
+  label: string;
+  keywords: string[];
+}
+
+/** The answer key. Only teachers and the developer can read it. */
+export interface TestKey {
+  question_id: string;
+  answer: string | null;
+  keyword_groups: KeywordGroup[];
+  rubric: string | null;
+}
+
+export interface TestResult {
+  question_id: string;
+  prompt: string;
+  kind: 'choice' | 'written';
+  earned: number;
+  possible: number;
+}
+
+export interface TestAttempt {
+  id: string;
+  user_id: string;
+  period: string;
+  submitted_at: string;
+  responses: Record<string, string>;
+  results: TestResult[];
+  score: number;
+  possible: number;
+  passed: boolean;
+  passed_by: string | null;
+  passed_by_teacher_at: string | null;
+}

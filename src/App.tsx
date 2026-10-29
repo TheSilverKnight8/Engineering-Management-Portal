@@ -21,6 +21,9 @@ const Item = lazy(() => import('./pages/shop/Item'));
 const Changelog = lazy(() => import('./pages/shop/Changelog'));
 const LearnHub = lazy(() => import('./pages/learn/LearnHub'));
 const Safety = lazy(() => import('./pages/learn/Safety'));
+const SafetyTest = lazy(() => import('./pages/learn/test/SafetyTest'));
+const SafetyTestEditor = lazy(() => import('./pages/learn/test/SafetyTestEditor'));
+const SafetyLog = lazy(() => import('./pages/learn/test/SafetyLog'));
 const Practice = lazy(() => import('./pages/learn/Practice'));
 const Projects = lazy(() => import('./pages/learn/Projects'));
 const ProjectEntry = lazy(() => import('./pages/learn/ProjectEntry'));
@@ -79,6 +82,9 @@ function Gate() {
             <Route path="/learn" element={<LearnHub />} />
             <Route path="/learn/safety" element={<Safety />} />
             <Route path="/learn/safety/practice" element={<Practice />} />
+            <Route path="/learn/safety/test" element={live(<SafetyTest />)} />
+            <Route path="/learn/safety/test/edit" element={live(<SafetyTestEditor />)} />
+            <Route path="/learn/safety/log" element={live(<SafetyLog />)} />
             <Route path="/learn/projects" element={<Projects />} />
             <Route path="/learn/projects/:slug" element={<ProjectEntry />} />
             <Route path="/learn/materials" element={<Materials />} />
