@@ -1,5 +1,5 @@
 -- Engineering Portal: tool status announcements and the alert bell
--- Run after 0004_announcements.sql.
+-- Run after 0007_test_score_edits.sql.
 --
 -- When a tool is marked as needing maintenance, or marked operational again,
 -- the database posts an announcement. The alert bell in the app counts the
