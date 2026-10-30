@@ -10,10 +10,17 @@ import { CLASS_NAME, SCHOOL_NAME } from '../../../config';
 import { Button, LoadingBlock } from '../../../components/ui';
 import NotFound from '../../NotFound';
 
-/** "Ana Lei Kealoha" → { last: "Kealoha", rest: "Ana Lei" } */
+// Words that belong to the last name when they come right before it:
+// "Kai De la Cruz" → "De la Cruz", "Mary St. John" → "St. John".
+const LAST_NAME_PREFIXES = new Set(['da', 'de', 'del', 'dela', 'della', 'delos', 'der', 'den', 'di', 'do', 'dos', 'du', 'la', 'las', 'le', 'los', 'san', 'santa', 'st', 'ste', 'ten', 'ter', 'van', 'von']);
+
+/** "Ana Lei Kealoha" → { last: "Kealoha", rest: "Ana Lei" }. The first word always stays a first name. */
 function splitName(full: string) {
   const parts = full.trim().split(/\s+/);
-  return { last: parts.length > 1 ? parts[parts.length - 1] : parts[0], rest: parts.slice(0, -1).join(' ') };
+  if (parts.length === 1) return { last: parts[0], rest: '' };
+  let start = parts.length - 1;
+  while (start > 1 && LAST_NAME_PREFIXES.has(parts[start - 1].toLowerCase().replace(/\.$/, ''))) start -= 1;
+  return { last: parts.slice(start).join(' '), rest: parts.slice(0, start).join(' ') };
 }
 
 // Teachers and the developer: everyone who passed the checkpoint, A to Z by

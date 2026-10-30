@@ -3,7 +3,7 @@ import { db } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { useToast } from '../../lib/toast';
 import { friendlyError } from '../../lib/errors';
-import { Button, Field, Input } from '../../components/ui';
+import { Button, Field, PasswordInput } from '../../components/ui';
 import { AuthLayout } from './AuthLayout';
 
 // Shown after someone opens a password-reset link from their email.
@@ -30,7 +30,7 @@ export default function NewPassword() {
       <form onSubmit={submit} className="animate-rise space-y-4">
         <h1 className="text-[2.5rem] leading-[0.95]">Set a new password</h1>
         <Field label="New password" htmlFor="pw" hint="At least 8 characters.">
-          <Input id="pw" type="password" autoComplete="new-password" minLength={8} required value={password} onChange={(e) => setPassword(e.target.value)} />
+          <PasswordInput id="pw" autoComplete="new-password" minLength={8} required value={password} onChange={(e) => setPassword(e.target.value)} />
         </Field>
         {error && <p className="rounded-xl bg-danger/10 px-3.5 py-2.5 text-sm text-danger">{error}</p>}
         <Button type="submit" variant="primary" size="lg" className="w-full" loading={busy}>
