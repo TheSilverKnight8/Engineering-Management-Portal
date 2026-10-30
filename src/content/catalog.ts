@@ -12,7 +12,8 @@ export const materials: Material[] = [
 ];
 
 // Labels come from the objectives in the first Shop Manual's picker. Engraving and
-// Advanced fabrication were added for the 3D printer and the laser cutters.
+// Advanced fabrication were added for the 3D printer and the laser cutters, and
+// Turning for the wood lathe.
 // Add a hint to show a one-line explanation under the label in the picker.
 export const objectives: Objective[] = [
   { id: 'straight-cuts', label: 'Straight cuts' },
@@ -28,6 +29,7 @@ export const objectives: Objective[] = [
   { id: 'demolition', label: 'Demolition' },
   { id: 'engraving', label: 'Engraving' },
   { id: 'advanced-fabrication', label: 'Advanced fabrication' },
+  { id: 'turning', label: 'Turning' },
 ];
 
 export const ppeLabels: Record<PpeId, string> = {

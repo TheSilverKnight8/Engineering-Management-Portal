@@ -236,6 +236,36 @@ const drawings: Record<string, ReactNode> = {
     </>
   ),
 
+  'wood-lathe': (
+    <>
+      <path d="M18 78v26M102 78v26M12 104h12M96 104h12" />
+      <rect className="b" x="8" y="70" width="104" height="8" rx="2" />
+      <rect className="b" x="10" y="38" width="24" height="32" rx="3" />
+      <circle className="thin" cx="22" cy="50" r="5" />
+      <path className="b" d="M90 46h18v24H90z" />
+      <rect className="b" x="80" y="51" width="10" height="8" />
+      <path className="b" d="M34 52l5 3-5 3zM80 52l-5 3 5 3z" />
+      <rect className="hotb" x="39" y="47" width="36" height="16" rx="5" />
+      <path className="thin" d="M50 47v16M64 47v16" />
+      <path className="hot thin" d="M46 42a12 4 0 0 1 22 0M68 42l-2.6-1.6M68 42l-1 2.8" />
+      <rect className="b" x="40" y="65" width="34" height="3" rx="1" />
+      <path d="M57 68v2" />
+    </>
+  ),
+
+  'spindle-sander': (
+    <>
+      <path className="b" d="M26 70h68l6 34H20z" />
+      <circle className="b" cx="40" cy="88" r="4" />
+      <rect className="b" x="94" y="86" width="14" height="8" rx="1" />
+      <rect className="b" x="8" y="62" width="104" height="8" rx="2" />
+      <rect className="hotb" x="52" y="24" width="16" height="38" rx="3" />
+      <path className="hot thin" d="M57 30v26M63 30v26" />
+      <path className="hot thin" d="M50 19a10 3.5 0 0 0 20 0M70 19l-2.4 1.6M70 19l-.8-2.6" />
+      <path className="hot thin" d="M80 30v14M77 33l3-3 3 3M77 41l3 3 3-3" />
+    </>
+  ),
+
   '3d-printer': (
     <>
       <circle className="b" cx="90" cy="11" r="7" />

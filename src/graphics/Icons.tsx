@@ -214,6 +214,13 @@ const objectiveIcons: Record<ObjectiveId, ReactNode> = {
       <path className="hotb" d="M10 2.5h4v3.5L12 8.5 10 6z" />
     </>
   ),
+  turning: (
+    <>
+      <rect className="b" x="3" y="8" width="18" height="7" rx="3.5" />
+      <path className="thin" d="M8.5 8v7M15.5 8v7" />
+      <path className="hot" d="M6 19.5a7 2.5 0 0 0 12 0M18 19.5l-2.2-1.2M18 19.5l-.9 2.2" />
+    </>
+  ),
 };
 
 export function ObjectiveIcon({ id, size = 24, className = '' }: { id: ObjectiveId; size?: number; className?: string }) {
