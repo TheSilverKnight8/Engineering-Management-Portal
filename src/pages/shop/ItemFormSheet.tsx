@@ -1,13 +1,28 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { tools } from '../../content/tools';
 import type { InventoryItem, ToolStatus } from '../../lib/types';
 import { db } from '../../lib/supabase';
 import { friendlyError } from '../../lib/errors';
 import { useToast } from '../../lib/toast';
-import { keys } from '../../lib/queries';
+import { keys, useInventory } from '../../lib/queries';
 import { Sheet } from '../../components/Sheet';
 import { Button, Field, Input, Segmented, Select, Textarea } from '../../components/ui';
+
+const MAX_AT_ONCE = 50;
+
+// "Cordless Drill #2" → "Cordless Drill"
+const baseName = (n: string) => n.trim().replace(/\s*#\d+$/, '');
+
+/**
+ * Names for several of the same tool: the base name plus a number, starting
+ * after the highest number already in the inventory ("#3" if #1 and #2 exist).
+ */
+function numberedNames(base: string, count: number, existing: string[]) {
+  const pattern = new RegExp(`^${base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} #(\\d+)$`, 'i');
+  const highest = existing.reduce((m, n) => Math.max(m, Number(pattern.exec(n.trim())?.[1] ?? 0)), 0);
+  return Array.from({ length: count }, (_, i) => `${base} #${highest + i + 1}`);
+}
 
 interface Props {
   open: boolean;
@@ -27,6 +42,13 @@ export function ItemFormSheet({ open, onClose, item, presetSlug, onSaved }: Prop
   const [status, setStatus] = useState<ToolStatus>('operational');
   const [statusNote, setStatusNote] = useState('');
   const [notes, setNotes] = useState('');
+  const [quantity, setQuantity] = useState('1');
+  const inventory = useInventory();
+  const count = item ? 1 : Math.min(MAX_AT_ONCE, Math.max(1, Math.floor(Number(quantity)) || 1));
+  const names = useMemo(
+    () => (count > 1 ? numberedNames(baseName(name), count, (inventory.data ?? []).map((i) => i.name)) : [name.trim()]),
+    [count, name, inventory.data],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -37,28 +59,38 @@ export function ItemFormSheet({ open, onClose, item, presetSlug, onSaved }: Prop
     setStatus(item?.status ?? 'operational');
     setStatusNote(item?.status_note ?? '');
     setNotes(item?.notes ?? '');
+    setQuantity('1');
   }, [open, item, presetSlug]);
 
   const save = useMutation({
     mutationFn: async () => {
       const row = {
-        name: name.trim(),
         tool_slug: slug || null,
         location: location.trim() || null,
         status,
         status_note: status === 'needs_maintenance' ? statusNote.trim() || null : null,
         notes: notes.trim() || null,
       };
-      const q = item ? db().from('inventory_items').update(row).eq('id', item.id) : db().from('inventory_items').insert(row);
-      const { data, error } = await q.select().single();
+      if (item) {
+        const { data, error } = await db().from('inventory_items').update({ ...row, name: name.trim() }).eq('id', item.id).select().single();
+        if (error) throw error;
+        return [data as InventoryItem];
+      }
+      // Several of the same tool go in one request; each still gets its own changelog entry.
+      const { data, error } = await db()
+        .from('inventory_items')
+        .insert(names.map((n) => ({ ...row, name: n })))
+        .select();
       if (error) throw error;
-      return data as InventoryItem;
+      return data as InventoryItem[];
     },
     onSuccess: (saved) => {
       void qc.invalidateQueries({ queryKey: keys.inventory });
       void qc.invalidateQueries({ queryKey: ['log'] });
-      toast(item ? 'Saved. The change is in the changelog.' : `${saved.name} is in the inventory.`);
-      onSaved?.(saved);
+      if (item) toast('Saved. The change is in the changelog.');
+      else if (saved.length === 1) toast(`${saved[0].name} is in the inventory.`);
+      else toast(`Added ${saved.length} tools: ${saved[0].name} to ${saved[saved.length - 1].name}.`);
+      if (saved.length === 1) onSaved?.(saved[0]);
       onClose();
     },
     onError: (e) => toast(friendlyError(e), 'error'),
@@ -73,12 +105,12 @@ export function ItemFormSheet({ open, onClose, item, presetSlug, onSaved }: Prop
     <Sheet
       open={open}
       onClose={onClose}
-      title={item ? `Edit ${item.name}` : 'Add a tool to the inventory'}
+      title={item ? `Edit ${item.name}` : count > 1 ? `Add ${count} tools to the inventory` : 'Add a tool to the inventory'}
       footer={
         <div className="flex justify-end gap-2">
           <Button onClick={onClose}>Cancel</Button>
           <Button variant="primary" type="submit" form="item-form" loading={save.isPending} disabled={!name.trim()}>
-            {item ? 'Save' : 'Add tool'}
+            {item ? 'Save' : count > 1 ? `Add ${count} tools` : 'Add tool'}
           </Button>
         </div>
       }
@@ -104,8 +136,21 @@ export function ItemFormSheet({ open, onClose, item, presetSlug, onSaved }: Prop
             ))}
           </Select>
         </Field>
-        <Field label="Name" htmlFor="name" hint="If the shop has more than one, add a number: “Cordless Drill #2”.">
-          <Input id="name" required maxLength={80} value={name} onChange={(e) => setName(e.target.value)} />
+        {!item && (
+          <Field label="How many" htmlFor="qty" hint={`Add up to ${MAX_AT_ONCE} of the same tool at once. They share the details below and get numbered names.`}>
+            <Input id="qty" type="number" inputMode="numeric" min={1} max={MAX_AT_ONCE} value={quantity} onChange={(e) => setQuantity(e.target.value)} className="w-28" />
+          </Field>
+        )}
+        <Field
+          label="Name"
+          htmlFor="name"
+          hint={
+            count > 1
+              ? `They will be named ${names.length > 3 ? `${names[0]}, ${names[1]}, … ${names[names.length - 1]}` : names.join(', ')}.`
+              : 'If the shop has more than one, add a number: “Cordless Drill #2”.'
+          }
+        >
+          <Input id="name" required maxLength={count > 1 ? 76 : 80} value={name} onChange={(e) => setName(e.target.value)} />
         </Field>
         <Field label="Location" htmlFor="loc">
           <Input id="loc" maxLength={80} placeholder="Where it is kept" value={location} onChange={(e) => setLocation(e.target.value)} />

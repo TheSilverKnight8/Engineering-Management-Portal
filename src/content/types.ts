@@ -17,7 +17,8 @@ export type ObjectiveId =
   | 'surface-finishing'
   | 'sharpening'
   | 'engraving'
-  | 'advanced-fabrication';
+  | 'advanced-fabrication'
+  | 'turning';
 
 export type PpeId =
   | 'safety-glasses'
