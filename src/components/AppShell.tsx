@@ -242,9 +242,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           {isHome && <CroswellLogo className="mb-5 ml-4 w-44 text-ink sm:ml-6 lg:hidden" />}
           <div className="relative">
             <div className="stripes stripes-br" aria-hidden />
-            {/* As on the title slide, the logo sits in the gap between the left edge and the
-                bars, centered. The longest bar reaches 77% of the way, which leaves 23%. */}
-            <div className="absolute inset-y-0 left-0 flex w-[23%] items-center justify-center">
+            {/* The logo sits in the gap left of the bars (the longest bar reaches 77% of the
+                way, which leaves 23%). Home's full logo is centered in it, as on the title
+                slide; the C on other screens lines up with the page's left margin. */}
+            <div className={cx('absolute inset-y-0 left-0 flex w-[23%] items-center', isHome ? 'justify-center' : 'justify-start pl-4 sm:pl-6 lg:pl-10')}>
               {isHome ? <CroswellLogo className="hidden w-[85%] max-w-[15rem] text-ink lg:block" /> : <CroswellMark className="h-9 text-ink lg:h-11" />}
             </div>
           </div>

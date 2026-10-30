@@ -1,6 +1,6 @@
-import { forwardRef, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
+import { forwardRef, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
 import { Link, type LinkProps } from 'react-router';
-import { ChevronDown, Loader2 } from 'lucide-react';
+import { ChevronDown, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 
 /** Joins class names. When two classes set the same thing (h-11 and h-9), the later one wins. */
@@ -132,6 +132,25 @@ const inputBase =
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(function Input({ className, ...rest }, ref) {
   return <input ref={ref} className={cx(inputBase, 'h-11', className)} {...rest} />;
+});
+
+/** A password box with a button that shows or hides what was typed. */
+export const PasswordInput = forwardRef<HTMLInputElement, Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>>(function PasswordInput({ className, ...rest }, ref) {
+  const [shown, setShown] = useState(false);
+  return (
+    <div className="relative">
+      <input ref={ref} type={shown ? 'text' : 'password'} autoCapitalize="none" autoCorrect="off" spellCheck={false} className={cx(inputBase, 'h-11 pr-11', className)} {...rest} />
+      <button
+        type="button"
+        onClick={() => setShown((s) => !s)}
+        aria-label={shown ? 'Hide password' : 'Show password'}
+        aria-pressed={shown}
+        className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-xl text-muted transition hover:text-ink"
+      >
+        {shown ? <EyeOff className="size-[1.125rem]" /> : <Eye className="size-[1.125rem]" />}
+      </button>
+    </div>
+  );
 });
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement>>(function Textarea({ className, ...rest }, ref) {

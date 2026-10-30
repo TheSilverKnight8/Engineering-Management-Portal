@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { MailCheck } from 'lucide-react';
 import { db } from '../../lib/supabase';
 import { friendlyError } from '../../lib/errors';
-import { Button, Field, Input, Segmented } from '../../components/ui';
+import { Button, Field, Input, PasswordInput, Segmented } from '../../components/ui';
 import { AuthLayout } from './AuthLayout';
 
 type Mode = 'sign-in' | 'sign-up' | 'reset';
@@ -90,9 +90,8 @@ export default function SignIn() {
           </Field>
           {mode !== 'reset' && (
             <Field label="Password" htmlFor="password" hint={mode === 'sign-up' ? 'At least 8 characters.' : undefined}>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 autoComplete={mode === 'sign-up' ? 'new-password' : 'current-password'}
                 required
                 minLength={mode === 'sign-up' ? 8 : undefined}
