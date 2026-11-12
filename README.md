@@ -16,6 +16,7 @@ It runs on free tiers: Supabase (database, sign-in, image storage) and GitHub Pa
 | Shop inventory | Every tool unit, status (operational / needs maintenance), checkouts for a time window. Add several of the same tool at once; they get numbered names (#3, #4, …). Overlapping checkouts are refused by the database. Anyone can edit; every change goes in a changelog nobody can edit. | Supabase |
 | Project groups | Groups with a text channel each. New messages arrive live. | Supabase |
 | Posts | Papers, competition opportunities, and builds, with up to 4 photos. | Supabase |
+| Profile pictures | Anyone can set a profile picture from their Profile: choose a photo, drag and zoom it into the circle. It is saved as a small square image (about 5–40 KB). Moderators can remove a picture from the roster. | Supabase |
 | Roster | Everyone in the class with their role, date joined, and project groups. Search by name or filter by group. Your own groups also show on your Profile. | Supabase |
 | Announcements | Teachers and the owner post news for the class (title, text, link, up to 4 photos). The database also posts one when someone joins, when a tool is marked as needing maintenance, and when it is marked operational again. A bell shows how many are new since you last opened Announcements. | Supabase |
 | Moderation | Anyone can report a post, announcement, or message. Teachers and mod students review reports and remove or restore content. | Supabase |
@@ -138,6 +139,7 @@ Nothing in the app needs a paid plan.
 | Edit the inventory, check out tools | ✓ | ✓ | ✓ | ✓ |
 | Post, make and join groups, message | ✓ | ✓ | ✓ | ✓ |
 | Review reports, remove and restore posts and messages | | ✓ | ✓ | ✓ |
+| Remove someone's profile picture | | ✓ | ✓ | ✓ |
 | Post announcements | | | ✓ | ✓ |
 | Take the safety test | ✓ | ✓ | ✓ | ✓ |
 | Edit the safety test, see the pass log, change points on attempts, mark an attempt as passed | | | ✓ | ✓ |

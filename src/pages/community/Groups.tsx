@@ -48,7 +48,7 @@ export default function Groups() {
           <div className="flex -space-x-2">
             {ms.slice(0, 6).map((m) => (
               <span key={m.user_id} className="rounded-full ring-2 ring-surface">
-                <Avatar name={roster.byId.get(m.user_id)?.full_name ?? '?'} size={28} />
+                <Avatar name={roster.byId.get(m.user_id)?.full_name ?? '?'} path={roster.byId.get(m.user_id)?.avatar_path} size={28} />
               </span>
             ))}
           </div>

@@ -26,7 +26,7 @@ export function MemberPicker({ exclude, picked, onChange }: { exclude: string[];
                 onClick={() => onChange(on ? picked.filter((x) => x !== p.id) : [...picked, p.id])}
                 className={cx('flex w-full items-center gap-3 rounded-lg p-2 text-left text-sm transition', on ? 'bg-accent/8' : 'hover:bg-raised')}
               >
-                <Avatar name={p.full_name} size={28} />
+                <Avatar name={p.full_name} path={p.avatar_path} size={28} />
                 <span className="flex-1 font-medium">{p.full_name}</span>
                 <span className={cx('flex size-5 items-center justify-center rounded-md border', on ? 'border-accent bg-accent text-on-accent' : 'border-line')}>{on && <Check className="size-3.5" strokeWidth={3} />}</span>
               </button>

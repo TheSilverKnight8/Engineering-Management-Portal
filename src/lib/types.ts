@@ -11,6 +11,8 @@ export interface Profile {
   created_at: string;
   /** Set when the member passes the Tool Safety Checkpoint. */
   safety_passed_at: string | null;
+  /** Profile picture: a path in the "post-images" bucket, in the member's own folder. */
+  avatar_path: string | null;
 }
 
 export type ToolStatus = 'operational' | 'needs_maintenance';

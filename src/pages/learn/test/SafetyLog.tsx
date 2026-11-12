@@ -119,7 +119,7 @@ function PersonRow({
   return (
     <div>
       <button onClick={onToggle} className="flex w-full items-center gap-3 p-4 text-left" aria-expanded={open}>
-        <Avatar name={person.full_name} size={36} />
+        <Avatar name={person.full_name} path={person.avatar_path} size={36} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-semibold">{person.full_name}</span>

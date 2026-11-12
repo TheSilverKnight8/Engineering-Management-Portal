@@ -96,7 +96,7 @@ export function FeedCard({ entry, onReport, onView, isNew = false }: { entry: Fe
       )}
       <div className="p-4 sm:p-5">
         <div className="mb-3 flex items-center gap-3">
-          {auto ? <AppMark size={36} /> : <Avatar name={author?.full_name ?? '?'} size={36} />}
+          {auto ? <AppMark size={36} /> : <Avatar name={author?.full_name ?? '?'} path={author?.avatar_path} size={36} />}
           <div className="min-w-0 flex-1 leading-tight">
             <div className="truncate text-sm font-semibold">{auto ? APP_NAME : (author?.full_name ?? 'Former member')}</div>
             <div className="flex items-center gap-1.5 text-xs text-muted">

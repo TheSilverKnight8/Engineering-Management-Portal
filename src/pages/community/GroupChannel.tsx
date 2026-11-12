@@ -34,6 +34,7 @@ export default function GroupChannel() {
   const isMember = groupMembers.some((m) => m.user_id === me.id);
   const messages = useMessages(id, isMember || isMod);
   const name = (uid: string | null) => (uid && roster.byId.get(uid)?.full_name) || 'Former member';
+  const pic = (uid: string | null) => (uid && roster.byId.get(uid)?.avatar_path) || null;
 
   const invalidateMembers = () => void qc.invalidateQueries({ queryKey: keys.groupMembers });
 
@@ -82,7 +83,7 @@ export default function GroupChannel() {
           <div className="flex -space-x-1.5">
             {groupMembers.slice(0, 3).map((m) => (
               <span key={m.user_id} className="rounded-full ring-2 ring-bg">
-                <Avatar name={name(m.user_id)} size={22} />
+                <Avatar name={name(m.user_id)} path={pic(m.user_id)} size={22} />
               </span>
             ))}
           </div>
@@ -126,7 +127,7 @@ export default function GroupChannel() {
         <ul className="mb-5 divide-y divide-line rounded-xl border border-line">
           {groupMembers.map((m) => (
             <li key={m.user_id} className="flex items-center gap-3 p-3">
-              <Avatar name={name(m.user_id)} size={32} />
+              <Avatar name={name(m.user_id)} path={pic(m.user_id)} size={32} />
               <span className="flex-1 text-sm font-medium">
                 {name(m.user_id)}
                 {m.user_id === me.id && <span className="text-muted"> (you)</span>}
@@ -189,6 +190,7 @@ function AddMembers({ groupId, existing, onDone }: { groupId: string; existing: 
 }
 
 function MessageList({ messages, loading, meId, isMod, name, groupId, onReport }: { messages: Message[]; loading: boolean; meId: string; isMod: boolean; name: (id: string | null) => string; groupId: string; onReport: (id: string) => void }) {
+  const roster = useRoster();
   const qc = useQueryClient();
   const toast = useToast();
   const scroller = useRef<HTMLDivElement>(null);
@@ -249,7 +251,7 @@ function MessageList({ messages, loading, meId, isMod, name, groupId, onReport }
             )}
             {/* tabIndex lets a tap on a phone reveal the message actions. */}
             <div tabIndex={0} className={cx('group relative flex gap-3 rounded-lg px-2 py-0.5 outline-none hover:bg-raised/60 focus:bg-raised/60', !grouped && 'mt-3', m.removed_at && 'opacity-60')}>
-              <div className="w-9 shrink-0">{!grouped && <Avatar name={name(m.author_id)} size={36} />}</div>
+              <div className="w-9 shrink-0">{!grouped && <Avatar name={name(m.author_id)} path={m.author_id ? roster.byId.get(m.author_id)?.avatar_path : null} size={36} />}</div>
               <div className="min-w-0 flex-1">
                 {!grouped && (
                   <div className="flex items-baseline gap-2">
