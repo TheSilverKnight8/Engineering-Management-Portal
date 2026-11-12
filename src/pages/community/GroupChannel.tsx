@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ChevronLeft, Flag, LogOut, RotateCcw, Send, ShieldOff, Trash2, UserMinus, UserPlus, Users } from 'lucide-react';
+import { ChevronLeft, Flag, LogOut, Paperclip, RotateCcw, Send, ShieldOff, Trash2, UserMinus, UserPlus, Users } from 'lucide-react';
 import { useAuth, useMe } from '../../lib/auth';
 import { useGroupMembers, useGroups, useMessages, useRoster, keys } from '../../lib/queries';
 import { canModerate, type Message } from '../../lib/types';
@@ -14,6 +14,8 @@ import { Avatar, Button, LoadingBlock, cx } from '../../components/ui';
 import { MemberPicker } from './MemberPicker';
 import { ReportSheet } from './ReportSheet';
 import NotFound from '../NotFound';
+import { GROUP_FILES_BUCKET, MAX_ATTACHMENTS, MAX_FILE_BYTES, isBlockedFile, isPicture, uploadAttachment } from '../../lib/attachments';
+import { MessageAttachments, PendingAttachments, type Pending } from './ChatAttachments';
 
 export default function GroupChannel() {
   const { id = '' } = useParams();
@@ -195,17 +197,23 @@ function MessageList({ messages, loading, meId, isMod, name, groupId, onReport }
   const toast = useToast();
   const scroller = useRef<HTMLDivElement>(null);
   const stick = useRef(true);
+  const [viewing, setViewing] = useState<string | null>(null);
 
   // Stay at the bottom as new messages arrive, unless the reader scrolled up.
-  useLayoutEffect(() => {
+  // Pictures load after their message, so they do the same once loaded.
+  const toBottom = () => {
     const el = scroller.current;
     if (el && stick.current) el.scrollTop = el.scrollHeight;
-  }, [messages.length]);
+  };
+  useLayoutEffect(toBottom, [messages.length]);
 
   const del = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await db().from('messages').delete().eq('id', id);
       if (error) throw error;
+      // The message's pictures and files go with it.
+      const paths = messages.find((m) => m.id === id)?.attachments.map((a) => a.path) ?? [];
+      if (paths.length) await db().storage.from(GROUP_FILES_BUCKET).remove(paths);
       return id;
     },
     onSuccess: (id) => qc.setQueryData<Message[]>(keys.messages(groupId), (old) => old?.filter((m) => m.id !== id)),
@@ -259,7 +267,8 @@ function MessageList({ messages, loading, meId, isMod, name, groupId, onReport }
                     <span className="text-xs text-muted">{formatTime(new Date(m.created_at))}</span>
                   </div>
                 )}
-                <p className="whitespace-pre-wrap break-words text-[0.9375rem] leading-relaxed">{m.body}</p>
+                {m.body.trim() && <p className="whitespace-pre-wrap break-words text-[0.9375rem] leading-relaxed">{m.body}</p>}
+                {m.attachments?.length > 0 && <MessageAttachments items={m.attachments} onView={setViewing} onLoad={toBottom} />}
                 {m.removed_at && <div className="text-xs font-medium text-danger">Removed by a moderator. Only moderators see this.</div>}
               </div>
               <div className="absolute right-2 top-0 hidden -translate-y-1/2 items-center gap-0.5 rounded-lg border border-line bg-surface p-0.5 shadow-card group-hover:flex group-focus-within:flex">
@@ -283,15 +292,50 @@ function MessageList({ messages, loading, meId, isMod, name, groupId, onReport }
           </Fragment>
         );
       })}
+      {viewing && (
+        <button className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4" onClick={() => setViewing(null)} aria-label="Close picture">
+          <img src={viewing} alt="" className="max-h-full max-w-full rounded-lg object-contain" />
+        </button>
+      )}
     </div>
   );
 }
 
 function Composer({ groupId }: { groupId: string }) {
+  const me = useMe();
   const toast = useToast();
   const qc = useQueryClient();
   const [text, setText] = useState('');
+  const [pending, setPending] = useState<Pending[]>([]);
   const area = useRef<HTMLTextAreaElement>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  function pick(files: FileList | null) {
+    if (!files) return;
+    const next: Pending[] = [];
+    for (const file of files) {
+      if (pending.length + next.length >= MAX_ATTACHMENTS) {
+        toast(`Up to ${MAX_ATTACHMENTS} pictures or files in one message.`, 'error');
+        break;
+      }
+      if (isBlockedFile(file.name)) {
+        toast(`${file.name} is a program or script, which cannot be shared.`, 'error');
+        continue;
+      }
+      if (!isPicture(file) && file.size > MAX_FILE_BYTES) {
+        toast(`${file.name} is larger than 10 MB.`, 'error');
+        continue;
+      }
+      next.push({ id: crypto.randomUUID(), file, preview: isPicture(file) ? URL.createObjectURL(file) : null });
+    }
+    setPending((p) => [...p, ...next]);
+  }
+  const removePending = (id: string) =>
+    setPending((p) => {
+      const gone = p.find((x) => x.id === id);
+      if (gone?.preview) URL.revokeObjectURL(gone.preview);
+      return p.filter((x) => x.id !== id);
+    });
 
   useEffect(() => {
     const el = area.current;
@@ -301,24 +345,37 @@ function Composer({ groupId }: { groupId: string }) {
   }, [text]);
 
   const send = useMutation({
-    mutationFn: async (body: string) => {
-      const { data, error } = await db().from('messages').insert({ group_id: groupId, body }).select().single();
-      if (error) throw error;
-      return data as Message;
+    mutationFn: async ({ body, items }: { body: string; items: Pending[] }) => {
+      // Upload first; if anything fails, take the uploaded files back out.
+      const attachments = [];
+      try {
+        for (const p of items) attachments.push(await uploadAttachment(p.file, groupId, me.id));
+        const { data, error } = await db().from('messages').insert({ group_id: groupId, body, attachments }).select().single();
+        if (error) throw error;
+        return data as Message;
+      } catch (e) {
+        if (attachments.length) await db().storage.from(GROUP_FILES_BUCKET).remove(attachments.map((a) => a.path));
+        throw e;
+      }
     },
-    onSuccess: (msg) => qc.setQueryData<Message[]>(keys.messages(groupId), (old) => (old && !old.some((m) => m.id === msg.id) ? [...old, msg] : old)),
-    onError: (e, body) => {
+    onSuccess: (msg, { items }) => {
+      items.forEach((p) => p.preview && URL.revokeObjectURL(p.preview));
+      qc.setQueryData<Message[]>(keys.messages(groupId), (old) => (old && !old.some((m) => m.id === msg.id) ? [...old, msg] : old));
+    },
+    onError: (e, { body, items }) => {
       setText(body);
-      toast(friendlyError(e), 'error');
+      setPending(items);
+      toast(e instanceof Error && !('code' in e) ? e.message : friendlyError(e), 'error');
     },
   });
 
   function submit(e?: FormEvent) {
     e?.preventDefault();
     const body = text.trim();
-    if (!body) return;
+    if ((!body && pending.length === 0) || send.isPending) return;
     setText('');
-    send.mutate(body);
+    setPending([]);
+    send.mutate({ body, items: pending });
   }
 
   function onKey(e: KeyboardEvent<HTMLTextAreaElement>) {
@@ -330,20 +387,34 @@ function Composer({ groupId }: { groupId: string }) {
 
   return (
     <form onSubmit={submit} className="shrink-0 border-t border-line py-3">
-      <div className="flex items-end gap-2 rounded-2xl border border-line bg-surface p-1.5 focus-within:border-navy focus-within:ring-3 focus-within:ring-navy/15">
-        <textarea
-          ref={area}
-          rows={1}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={onKey}
-          maxLength={2000}
-          placeholder="Message the group"
-          className="max-h-40 flex-1 resize-none bg-transparent px-2.5 py-2 text-base outline-none lg:text-[0.9375rem] placeholder:text-muted"
-        />
-        <button type="submit" disabled={!text.trim()} className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-on-accent transition disabled:opacity-40" aria-label="Send">
-          <Send className="size-4" />
-        </button>
+      {send.isPending && send.variables?.items.length ? <div className="mb-1.5 px-1 text-xs text-muted">Sending {send.variables.items.length === 1 ? '1 attachment' : `${send.variables.items.length} attachments`}…</div> : null}
+      <div className="rounded-2xl border border-line bg-surface focus-within:border-navy focus-within:ring-3 focus-within:ring-navy/15">
+        <PendingAttachments items={pending} onRemove={removePending} disabled={send.isPending} />
+        <div className="flex items-end gap-2 p-1.5">
+          <button
+            type="button"
+            onClick={() => fileInput.current?.click()}
+            disabled={pending.length >= MAX_ATTACHMENTS || send.isPending}
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl text-muted transition hover:bg-raised hover:text-ink disabled:opacity-40"
+            aria-label="Attach pictures or files"
+          >
+            <Paperclip className="size-[1.125rem]" />
+          </button>
+          <input ref={fileInput} type="file" multiple hidden onChange={(e) => { pick(e.target.files); e.target.value = ''; }} />
+          <textarea
+            ref={area}
+            rows={1}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={onKey}
+            maxLength={2000}
+            placeholder="Message the group"
+            className="max-h-40 flex-1 resize-none bg-transparent px-2.5 py-2 text-base outline-none lg:text-[0.9375rem] placeholder:text-muted"
+          />
+          <button type="submit" disabled={(!text.trim() && pending.length === 0) || send.isPending} className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-on-accent transition disabled:opacity-40" aria-label="Send">
+            <Send className="size-4" />
+          </button>
+        </div>
       </div>
     </form>
   );

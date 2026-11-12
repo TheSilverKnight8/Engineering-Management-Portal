@@ -81,11 +81,21 @@ export interface GroupMember {
   joined_at: string;
 }
 
+/** A picture or file in a group chat message. */
+export interface Attachment {
+  path: string;
+  name: string;
+  size: number;
+  type: string;
+  kind: 'image' | 'file';
+}
+
 export interface Message {
   id: string;
   group_id: string;
   author_id: string | null;
   body: string;
+  attachments: Attachment[];
   created_at: string;
   removed_at: string | null;
   removed_by: string | null;

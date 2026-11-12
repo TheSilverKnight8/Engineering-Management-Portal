@@ -14,7 +14,7 @@ It runs on free tiers: Supabase (database, sign-in, image storage) and GitHub Pa
 | Learn | Safety (PPE table by tool, study guide sections, rules by tool), safety practice questions, practice projects, materials, Simplified Technical English. | Repo |
 | Tool Safety Checkpoint | The safety test, taken in the app. The database grades it (exact answers, and keywords for written answers); 100% passes. One attempt every 24 hours, and the test is done once passed. Students see which questions they missed, not the answers. Teachers and the owner see a pass log with every attempt, read each answer next to the key, change the points on any question (the score and pass update), or mark a whole attempt as passed. Everyone sees a "Safety passed" tag on the roster. | Supabase |
 | Shop inventory | Every tool unit, status (operational / needs maintenance), checkouts for a time window. Add several of the same tool at once; they get numbered names (#3, #4, …). Overlapping checkouts are refused by the database. Anyone can edit; every change goes in a changelog nobody can edit. | Supabase |
-| Project groups | Groups with a text channel each. New messages arrive live. | Supabase |
+| Project groups | Groups with a text channel each. New messages arrive live. Messages can carry up to 4 pictures or files (any type except programs and scripts, up to 10 MB each). Only the group's members and moderators can open them. | Supabase |
 | Posts | Papers, competition opportunities, and builds, with up to 4 photos. | Supabase |
 | Profile pictures | Anyone can set a profile picture from their Profile: choose a photo, drag and zoom it into the circle. It is saved as a small square image (about 5–40 KB). Moderators can remove a picture from the roster. | Supabase |
 | Roster | Everyone in the class with their role, date joined, and project groups. Search by name or filter by group. Your own groups also show on your Profile. | Supabase |
@@ -127,6 +127,7 @@ How the app stays well under them:
 - Curated content (tools, safety, projects, illustrations, graphics) is in the repo and served by the host, not Supabase.
 - Videos are YouTube embeds that load only when someone taps play.
 - Post photos are shrunk in the browser to at most 1600 px (WebP, usually 150–300 KB). The storage bucket refuses files over 1 MB, and a post has at most 4 photos.
+- Group chat pictures are shrunk the same way. Other chat files are stored as they are, so they are capped at 10 MB each and go in a private bucket (`group-files`). Chat files share the 1 GB with post photos and profile pictures; deleting a message deletes its files.
 - Database rows are small text. A class of this size will use a tiny part of 500 MB.
 
 Nothing in the app needs a paid plan.
