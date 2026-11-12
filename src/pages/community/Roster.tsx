@@ -1,13 +1,21 @@
 import { useMemo, useState } from 'react';
-import { Search, ShieldCheck } from 'lucide-react';
-import { useGroupMembers, useGroups, useRoster } from '../../lib/queries';
+import { ImageOff, Search, ShieldCheck } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '../../lib/auth';
+import { db, POST_IMAGE_BUCKET } from '../../lib/supabase';
+import { friendlyError } from '../../lib/errors';
+import { useToast } from '../../lib/toast';
+import { canModerate, type Profile } from '../../lib/types';
+import { keys, useGroupMembers, useGroups, useRoster } from '../../lib/queries';
 import { formatDate } from '../../lib/time';
 import { PageHeader } from '../../components/PageHeader';
-import { Avatar, Card, Chip, EmptyState, Input, LoadingBlock, RoleBadges, Select } from '../../components/ui';
+import { Avatar, Button, Card, Chip, EmptyState, Input, LoadingBlock, RoleBadges, Select } from '../../components/ui';
 import { CommunityTabs } from './CommunityTabs';
 import { GroupTags, useGroupsByMember } from './GroupTags';
 
 export default function Roster() {
+  const { profile } = useAuth();
+  const isMod = canModerate(profile);
   const roster = useRoster();
   const groups = useGroups();
   const members = useGroupMembers();
@@ -61,7 +69,7 @@ export default function Roster() {
               const theirGroups = groupsOf.get(p.id) ?? [];
               return (
                 <div key={p.id} className="flex gap-3 p-4">
-                  <Avatar name={p.full_name} size={40} />
+                  <Avatar name={p.full_name} path={p.avatar_path} size={40} />
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <span className="font-semibold">{p.full_name}</span>
@@ -79,6 +87,7 @@ export default function Roster() {
                       </div>
                     )}
                   </div>
+                  {isMod && p.avatar_path && p.id !== profile?.id && <RemovePicture person={p} />}
                 </div>
               );
             })}
@@ -86,5 +95,35 @@ export default function Roster() {
         )}
       </div>
     </div>
+  );
+}
+
+// Moderators: take down a member's profile picture. The file is deleted too.
+function RemovePicture({ person }: { person: Profile }) {
+  const qc = useQueryClient();
+  const toast = useToast();
+  const remove = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await db().rpc('remove_profile_picture', { member: person.id });
+      if (error) throw error;
+      if (data) await db().storage.from(POST_IMAGE_BUCKET).remove([data as string]);
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: keys.roster });
+      toast(`Removed ${person.full_name}'s picture.`);
+    },
+    onError: (e) => toast(friendlyError(e), 'error'),
+  });
+  return (
+    <Button
+      size="sm"
+      variant="ghost"
+      className="shrink-0 self-start"
+      loading={remove.isPending}
+      onClick={() => confirm(`Remove ${person.full_name}'s profile picture? Their initials show instead.`) && remove.mutate()}
+    >
+      <ImageOff className="size-4" />
+      <span className="max-sm:sr-only">Remove picture</span>
+    </Button>
   );
 }

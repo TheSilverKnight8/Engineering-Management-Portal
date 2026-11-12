@@ -2,6 +2,7 @@ import { forwardRef, useState, type ButtonHTMLAttributes, type InputHTMLAttribut
 import { Link, type LinkProps } from 'react-router';
 import { ChevronDown, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
+import { postImageUrl } from '../lib/supabase';
 
 /** Joins class names. When two classes set the same thing (h-11 and h-9), the later one wins. */
 export function cx(...parts: (string | false | null | undefined)[]) {
@@ -192,7 +193,22 @@ export function Segmented<T extends string>({ value, onChange, options, classNam
 
 const avatarColors = ['#002657', '#fc3f3f', '#2d4f7f', '#b9302f'];
 
-export function Avatar({ name, size = 32, className }: { name: string; size?: number; className?: string }) {
+/** A member's profile picture, or their initials when they have none (or it fails to load). */
+export function Avatar({ name, path, size = 32, className }: { name: string; path?: string | null; size?: number; className?: string }) {
+  const [failed, setFailed] = useState<string | null>(null);
+  if (path && failed !== path) {
+    return (
+      <img
+        src={postImageUrl(path)}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        onError={() => setFailed(path)}
+        className={cx('inline-block shrink-0 rounded-full bg-raised object-cover ring-1 ring-line', className)}
+        style={{ width: size, height: size }}
+      />
+    );
+  }
   const parts = name.trim().split(/\s+/);
   const initials = ((parts[0]?.[0] ?? '') + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
   let h = 0;

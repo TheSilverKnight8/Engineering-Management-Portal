@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, CalendarClock, Package } from 'lucide-react';
-import { useLog } from '../../lib/queries';
+import { useLog, useRoster } from '../../lib/queries';
 import type { LogEntry } from '../../lib/types';
 import { dayLabel, formatTime } from '../../lib/time';
 import { PageHeader } from '../../components/PageHeader';
@@ -76,9 +76,10 @@ export default function Changelog() {
 export function LogRow({ e, hideItem }: { e: LogEntry; hideItem?: boolean }) {
   const { verb, details } = describeLog(e);
   const isCheckout = e.action.startsWith('checkout.');
+  const roster = useRoster();
   return (
     <div className="flex gap-3 p-4">
-      <Avatar name={e.actor_name ?? '?'} size={32} />
+      <Avatar name={e.actor_name ?? '?'} path={e.actor_id ? roster.byId.get(e.actor_id)?.avatar_path : null} size={32} />
       <div className="min-w-0 flex-1">
         <div className="text-sm">
           <span className="font-semibold">{e.actor_name ?? 'Someone'}</span> <span className="text-muted">{verb}</span>{' '}

@@ -191,7 +191,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="border-t border-line p-3">
           {profile ? (
             <NavLink to="/me" className={({ isActive: a }) => cx('flex items-center gap-3 rounded-xl p-2 transition', a ? 'bg-raised' : 'hover:bg-raised')}>
-              <Avatar name={profile.full_name} size={36} />
+              <Avatar name={profile.full_name} path={profile.avatar_path} size={36} />
               <div className="min-w-0 leading-tight">
                 <div className="truncate text-sm font-medium">{profile.full_name}</div>
                 <div className="text-xs capitalize text-muted">{profile.role}</div>
@@ -228,7 +228,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           )}
           {profile && (
             <Link to="/me" aria-label="Your profile" className="ml-1">
-              <Avatar name={profile.full_name} size={32} />
+              <Avatar name={profile.full_name} path={profile.avatar_path} size={32} />
             </Link>
           )}
         </div>

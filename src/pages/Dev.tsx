@@ -98,7 +98,7 @@ function MemberRow({ p, self }: { p: Profile; self: boolean }) {
 
   return (
     <div className="flex flex-wrap items-center gap-3 p-4">
-      <Avatar name={p.full_name} size={36} />
+      <Avatar name={p.full_name} path={p.avatar_path} size={36} />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="font-medium">{p.full_name}</span>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Download, LogOut, Monitor, Moon, Share, Sun } from 'lucide-react';
+import { Camera, Download, LogOut, Monitor, Moon, Share, Sun } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { useTheme, type ThemeChoice } from '../lib/theme';
 import { isIos, isStandalone, useInstallPrompt } from '../lib/install';
@@ -13,6 +13,7 @@ import { keys } from '../lib/queries';
 import { PageHeader } from '../components/PageHeader';
 import { Avatar, Button, Card, Field, Input, RoleBadges, SectionTitle, Segmented } from '../components/ui';
 import { JoinCodeCard } from './JoinCodeCard';
+import { AvatarEditor } from './AvatarEditor';
 import { GroupTags, useGroupsByMember } from './community/GroupTags';
 
 export default function Profile() {
@@ -21,6 +22,7 @@ export default function Profile() {
   const toast = useToast();
   const qc = useQueryClient();
   const [name, setName] = useState(profile?.full_name ?? '');
+  const [editingPicture, setEditingPicture] = useState(false);
   const myGroups = useGroupsByMember().get(profile?.id ?? '') ?? [];
 
   const saveName = useMutation({
@@ -43,7 +45,12 @@ export default function Profile() {
       {profile && (
         <Card className="p-5 sm:p-6">
           <div className="flex items-center gap-4">
-            <Avatar name={profile.full_name} size={64} />
+            <button type="button" onClick={() => setEditingPicture(true)} className="group relative shrink-0 rounded-full" aria-label="Change profile picture">
+              <Avatar name={profile.full_name} path={profile.avatar_path} size={64} />
+              <span className="absolute -bottom-0.5 -right-0.5 flex size-6 items-center justify-center rounded-full bg-accent text-on-accent ring-2 ring-surface transition group-hover:scale-110">
+                <Camera className="size-3.5" />
+              </span>
+            </button>
             <div className="min-w-0">
               <div className="text-xl font-semibold">{profile.full_name}</div>
               <div className="truncate text-sm text-muted">{session?.user.email}</div>
@@ -85,6 +92,8 @@ export default function Profile() {
           </form>
         </Card>
       )}
+
+      {profile && <AvatarEditor open={editingPicture} onClose={() => setEditingPicture(false)} />}
 
       {canSeeJoinCode(profile) && <JoinCodeCard />}
 
