@@ -889,7 +889,7 @@ export const tools: Tool[] = [
     name: "Wood Lathe",
     category: "machines",
     form: "stationary",
-    summary: "A machine that turns a piece of wood while you shape it with a hand-held cutting tool. It makes round parts such as handles, legs, bowls, and pens.",
+    summary: "A machine that turns a piece of wood while you shape it with a hand-held cutting tool. It makes round parts such as handles, legs, bowls, and pens. The shop has a JET lathe.",
     ppe: ["safety-glasses", "face-shield"],
     noGloves: true,
     picker: {
@@ -945,7 +945,7 @@ export const tools: Tool[] = [
     name: "Spindle Sander",
     category: "abrasives",
     form: "stationary",
-    summary: "A benchtop sander with a sanding drum that turns and moves up and down. It sands curved edges and inside curves.",
+    summary: "A benchtop sander with a sanding drum that turns and moves up and down 5/8 in. It sands curved edges and inside curves. The shop has a WEN oscillating belt and spindle sander and uses only the spindle.",
     ppe: ["safety-glasses", "dust-mask"],
     noGloves: true,
     picker: {
@@ -957,9 +957,10 @@ export const tools: Tool[] = [
       maxWidth: null,
     },
     designedFor: [
-      "Inside curves and curved edges",
+      "Inside curves and curved edges with a radius of 1/4 in or more",
       "Smoothing edges after a bandsaw or jigsaw cut",
       "Sanding to a line",
+      "Beveled edges up to 45 degrees (the table tilts)",
     ],
     notDesignedFor: [
       "Metal",
@@ -978,7 +979,7 @@ export const tools: Tool[] = [
     ],
     operation: [
       "Put on safety glasses and a dust mask.",
-      "Disconnect the power. Install a drum that fits the curve.",
+      "Disconnect the power. Install a drum that fits the curve. The drums are 1/2, 3/4, 1, 1-1/2, and 2 in.",
       "Install the table insert that fits the drum.",
       "Connect the power. Turn on the dust collection.",
       "Set the power switch to ON. Let the drum get to full speed.",
