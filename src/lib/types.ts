@@ -225,3 +225,37 @@ export interface TestAttempt {
   adjusted_by: string | null;
   adjusted_at: string | null;
 }
+
+/** A notice for one person (supabase/migrations/0011_test_appeals.sql). The alert bell counts unread ones. */
+export interface Notification {
+  id: string;
+  user_id: string;
+  kind: 'appeal_new' | 'appeal_decided';
+  title: string;
+  body: string | null;
+  /** A path in the app to open. */
+  link: string | null;
+  created_at: string;
+  read_at: string | null;
+}
+
+export interface AppealItem {
+  question_id: string;
+  prompt: string;
+  reason: string;
+  decision: 'accepted' | 'denied' | null;
+}
+
+/** A student's appeal of questions they missed on their latest attempt. */
+export interface TestAppeal {
+  id: string;
+  attempt_id: string;
+  user_id: string;
+  items: AppealItem[];
+  status: 'open' | 'decided';
+  reply: string | null;
+  created_at: string;
+  decided_by: string | null;
+  decided_at: string | null;
+}
+

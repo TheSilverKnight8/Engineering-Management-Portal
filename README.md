@@ -12,13 +12,13 @@ It runs on free tiers: Supabase (database, sign-in, image storage) and GitHub Pa
 | Tool picker | Optional questions (material, job, precision, size). Results update as you answer, say why each tool fits or does not, and show how many units are free in the shop. Answers are in the URL, so results can be shared. | Repo (`src/content`) |
 | Tool library and entries | Every tool with illustration, PPE, at-a-glance specs, designed / not designed for, safety rules, operation steps, a one-step-at-a-time view for phones, video slots, and graphics. Text is the ASD-STE100 content from the first Shop Manual, unchanged. | Repo |
 | Learn | Safety (PPE table by tool, study guide sections, rules by tool), safety practice questions, practice projects, materials, Simplified Technical English. | Repo |
-| Tool Safety Checkpoint | The safety test, taken in the app. The database grades it (exact answers, and keywords for written answers); 100% passes. One attempt every 24 hours, and the test is done once passed. Students see which questions they missed, not the answers. Teachers and the owner see a pass log with every attempt, read each answer next to the key, change the points on any question (the score and pass update), or mark a whole attempt as passed. Everyone sees a "Safety passed" tag on the roster. | Supabase |
+| Tool Safety Checkpoint | The safety test, taken in the app. The database grades it (exact answers, and keywords for written answers); 100% passes. One attempt every 24 hours, and the test is done once passed. Students see which questions they missed, not the answers. Teachers and the owner see a pass log with every attempt, read each answer next to the key, change the points on any question (the score and pass update), or mark a whole attempt as passed. A student can appeal questions they missed on their latest attempt that did not pass, with a reason for each; teachers and the owner accept or deny each question, and an accepted question gets full points. Everyone sees a "Safety passed" tag on the roster. | Supabase |
 | Shop inventory | Every tool unit, status (operational / needs maintenance), checkouts for a time window. Add several of the same tool at once; they get numbered names (#3, #4, …). Overlapping checkouts are refused by the database. Anyone can edit; every change goes in a changelog nobody can edit. | Supabase |
 | Project groups | Groups with a text channel each. New messages arrive live. Messages can carry up to 4 pictures or files (any type except programs and scripts, up to 10 MB each). Only the group's members and moderators can open them. | Supabase |
 | Posts | Papers, competition opportunities, and builds, with up to 4 photos. | Supabase |
 | Profile pictures | Anyone can set a profile picture from their Profile: choose a photo, drag and zoom it into the circle. It is saved as a small square image (about 5–40 KB). Moderators can remove a picture from the roster. | Supabase |
 | Roster | Everyone in the class with their role, date joined, and project groups. Search by name or filter by group. Your own groups also show on your Profile. | Supabase |
-| Announcements | Teachers and the owner post news for the class (title, text, link, up to 4 photos). The database also posts one when someone joins, when a tool is marked as needing maintenance, and when it is marked operational again. A bell shows how many are new since you last opened Announcements. | Supabase |
+| Announcements | Teachers and the owner post news for the class (title, text, link, up to 4 photos). The database also posts one when someone joins, when a tool is marked as needing maintenance, and when it is marked operational again. A bell shows how many are new since you last opened Announcements, plus private notices ("For you"): teachers and the owner get one for each new safety test appeal, and the student gets one when it is decided. | Supabase |
 | Moderation | Anyone can report a post, announcement, or message. Teachers and mod students review reports and remove or restore content. | Supabase |
 | Developer page | Owner only: set teacher role and mod students, remove members, change the join code. | Supabase |
 
@@ -99,6 +99,7 @@ The questions and answer key are **not** in this repository, because the reposit
 - Photos are compressed in the browser and stored in the same `post-images` bucket as post photos.
 - **Print list** in the Pass log opens a printable list of everyone who passed, A to Z by last name, with class period and date passed. The print dialog opens on its own; choose **Save as PDF** there for a PDF.
 - In the **Pass log**, open an attempt to read every answer. Each question has points buttons: a teacher can give credit for a written answer that was right in other words, or take it away. The automatic points are kept and shown next to the change. At 100% the attempt passes; lowering a question takes the pass away again, unless the whole attempt was marked as passed.
+- **Appeals.** After an attempt that did not pass, the student can choose questions they missed and give a reason for each. One appeal per attempt, and only for their latest attempt, until they take the test again. New appeals show at the top of the **Pass log** (with a count on the Pass log button and a notice in the bell). The teacher sees the student's answer, the key, and the reason, then accepts or denies each question and can add a reply. An accepted question gets full points, so the score and pass update as for any points change. The student gets a notice with the decision.
 
 ## Editing the content
 
@@ -142,8 +143,8 @@ Nothing in the app needs a paid plan.
 | Review reports, remove and restore posts and messages | | ✓ | ✓ | ✓ |
 | Remove someone's profile picture | | ✓ | ✓ | ✓ |
 | Post announcements | | | ✓ | ✓ |
-| Take the safety test | ✓ | ✓ | ✓ | ✓ |
-| Edit the safety test, see the pass log, change points on attempts, mark an attempt as passed | | | ✓ | ✓ |
+| Take the safety test, appeal questions on your latest attempt | ✓ | ✓ | ✓ | ✓ |
+| Edit the safety test, see the pass log, change points on attempts, mark an attempt as passed, decide appeals | | | ✓ | ✓ |
 | See and change the join code | | | ✓ | ✓ |
 | Set roles and mods, remove members | | | | ✓ |
 | Change the app and its content | | | | ✓ (through the repo) |

@@ -6,7 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { db } from './supabase';
 import { useAuth } from './auth';
-import type { Announcement, Checkout, Group, GroupMember, InventoryItem, LogEntry, Message, Post, Profile, Report, TestAttempt, TestKey, TestQuestion, TestSection } from './types';
+import type { Announcement, Notification, TestAppeal, Checkout, Group, GroupMember, InventoryItem, LogEntry, Message, Post, Profile, Report, TestAttempt, TestKey, TestQuestion, TestSection } from './types';
 
 export const keys = {
   roster: ['roster'] as const,
@@ -25,6 +25,8 @@ export const keys = {
   safetyTest: ['safety_test'] as const,
   testKeys: ['test_keys'] as const,
   attempts: (who: 'mine' | 'all') => ['test_attempts', who] as const,
+  appeals: (who: 'mine' | 'all') => ['test_appeals', who] as const,
+  notifications: ['notifications'] as const,
 };
 
 /** True when signed in and in the class, so Supabase queries can run. */
@@ -283,5 +285,63 @@ export function useAllAttempts(enabled: boolean) {
     enabled: live && enabled,
     queryFn: () => run<TestAttempt[]>(db().from('test_attempts').select('*').order('submitted_at', { ascending: false })),
   });
+}
+
+/** Safety test appeals: the signed-in member's own, newest first. */
+export function useMyAppeals() {
+  const live = useLive();
+  const { profile } = useAuth();
+  return useQuery({
+    queryKey: keys.appeals('mine'),
+    enabled: live && !!profile,
+    queryFn: () => run<TestAppeal[]>(db().from('test_appeals').select('*').eq('user_id', profile!.id).order('created_at', { ascending: false })),
+  });
+}
+
+/** Every appeal, oldest open first. Only teachers and the developer get rows. */
+export function useAllAppeals(enabled: boolean) {
+  const live = useLive();
+  return useQuery({
+    queryKey: keys.appeals('all'),
+    enabled: live && enabled,
+    queryFn: () => run<TestAppeal[]>(db().from('test_appeals').select('*').order('created_at', { ascending: true })),
+  });
+}
+
+/** The signed-in member's private notices, newest first. */
+export function useNotifications() {
+  const live = useLive();
+  const { profile } = useAuth();
+  return useQuery({
+    queryKey: keys.notifications,
+    enabled: live && !!profile,
+    queryFn: () => run<Notification[]>(db().from('notifications').select('*').order('created_at', { ascending: false }).limit(50)),
+  });
+}
+
+/**
+ * Refreshes notices as soon as one arrives, with what they are about: appeals,
+ * attempts, and the member's own pass. Used once, in the app shell.
+ */
+export function useNotificationsLive() {
+  const live = useLive();
+  const { profile, refreshProfile } = useAuth();
+  const qc = useQueryClient();
+  useEffect(() => {
+    if (!live || !profile) return;
+    const channel = db()
+      .channel('notifications')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${profile.id}` }, () => {
+        void qc.invalidateQueries({ queryKey: keys.notifications });
+        void qc.invalidateQueries({ queryKey: ['test_appeals'] });
+        void qc.invalidateQueries({ queryKey: ['test_attempts'] });
+        void refreshProfile();
+      })
+      .subscribe();
+    return () => {
+      void db().removeChannel(channel);
+    };
+    // profile.id is enough: a refreshed profile for the same member keeps the channel.
+  }, [live, profile?.id, qc]);
 }
 

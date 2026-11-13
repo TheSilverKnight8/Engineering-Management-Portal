@@ -48,7 +48,6 @@ function ReviewRow({ attemptId, n, r, q, k, given }: { attemptId: string; n: num
   });
 
   const full = r.earned >= r.possible;
-  const lower = given.toLowerCase();
   return (
     <li className="flex gap-3 py-3">
       <span className={cx('mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full', full ? 'bg-ok/12 text-ok' : r.earned > 0 ? 'bg-warn/15 text-warn' : 'bg-danger/12 text-danger')}>
@@ -62,21 +61,7 @@ function ReviewRow({ attemptId, n, r, q, k, given }: { attemptId: string; n: num
         </div>
         <div className="mt-1 whitespace-pre-wrap rounded-lg bg-raised px-2.5 py-1.5 text-sm">{given || '(no answer)'}</div>
 
-        {r.kind === 'choice' && k?.answer && given !== k.answer && <div className="mt-1 text-xs text-muted">Correct answer: {k.answer}</div>}
-        {r.kind === 'written' && k && (
-          <div className="mt-1.5 space-y-1 text-xs">
-            {k.keyword_groups.map((g) => {
-              const hit = g.keywords.find((w) => w.trim() && lower.includes(w.trim().toLowerCase()));
-              return (
-                <div key={g.label} className={hit ? 'text-ok' : 'text-muted'}>
-                  {hit ? '✓' : '✗'} {g.label}
-                  {hit ? ` (matched “${hit}”)` : ` (keywords: ${g.keywords.slice(0, 6).join(', ')}${g.keywords.length > 6 ? '…' : ''})`}
-                </div>
-              );
-            })}
-            {k.rubric && <div className="text-muted">Full answer covers: {k.rubric}</div>}
-          </div>
-        )}
+        <KeyDetails kind={r.kind} k={k} given={given} />
 
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <span className="text-xs text-muted">Points</span>
@@ -101,3 +86,25 @@ function ReviewRow({ attemptId, n, r, q, k, given }: { attemptId: string; n: num
     </li>
   );
 }
+
+/** For teachers: the correct answer (choice), or which keyword groups the answer matched and what a full answer covers (written). */
+export function KeyDetails({ kind, k, given }: { kind: 'choice' | 'written'; k?: TestKey; given: string }) {
+  if (!k) return null;
+  if (kind === 'choice') return k.answer && given !== k.answer ? <div className="mt-1 text-xs text-muted">Correct answer: {k.answer}</div> : null;
+  const lower = given.toLowerCase();
+  return (
+    <div className="mt-1.5 space-y-1 text-xs">
+      {k.keyword_groups.map((g) => {
+        const hit = g.keywords.find((w) => w.trim() && lower.includes(w.trim().toLowerCase()));
+        return (
+          <div key={g.label} className={hit ? 'text-ok' : 'text-muted'}>
+            {hit ? '✓' : '✗'} {g.label}
+            {hit ? ` (matched “${hit}”)` : ` (keywords: ${g.keywords.slice(0, 6).join(', ')}${g.keywords.length > 6 ? '…' : ''})`}
+          </div>
+        );
+      })}
+      {k.rubric && <div className="text-muted">Full answer covers: {k.rubric}</div>}
+    </div>
+  );
+}
+

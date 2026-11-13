@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ChevronDown, Printer, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../../lib/auth';
-import { keys, useAllAttempts, useRoster, useSafetyTest, useTestKeys } from '../../../lib/queries';
-import { canManageTest, type Profile, type TestAttempt, type TestKey, type TestQuestion } from '../../../lib/types';
+import { keys, useAllAppeals, useAllAttempts, useRoster, useSafetyTest, useTestKeys } from '../../../lib/queries';
+import { canManageTest, type Profile, type TestAppeal, type TestAttempt, type TestKey, type TestQuestion } from '../../../lib/types';
 import { db } from '../../../lib/supabase';
 import { friendlyError } from '../../../lib/errors';
 import { useToast } from '../../../lib/toast';
@@ -13,6 +13,7 @@ import { Avatar, Button, ButtonLink, Card, Chip, EmptyState, LoadingBlock, Segme
 import NotFound from '../../NotFound';
 import { ScoreLine } from './shared';
 import { AttemptReview } from './AttemptReview';
+import { AppealReview, AppealSummary } from './Appeals';
 
 type Filter = 'all' | 'passed' | 'not';
 
@@ -25,6 +26,7 @@ export default function SafetyLog() {
   const attempts = useAllAttempts(manager);
   const test = useSafetyTest();
   const testKeys = useTestKeys(manager);
+  const appeals = useAllAppeals(manager);
   const [filter, setFilter] = useState<Filter>('all');
   const [open, setOpen] = useState<string | null>(null);
 
@@ -34,6 +36,9 @@ export default function SafetyLog() {
     return m;
   }, [attempts.data]);
   const questions = useMemo(() => new Map((test.data ?? []).flatMap((s) => s.questions.map((q) => [q.id, q] as const))), [test.data]);
+  const appealByAttempt = useMemo(() => new Map((appeals.data ?? []).map((a) => [a.attempt_id, a])), [appeals.data]);
+  const attemptById = useMemo(() => new Map((attempts.data ?? []).map((a) => [a.id, a])), [attempts.data]);
+  const openAppeals = (appeals.data ?? []).filter((a) => a.status === 'open');
 
   if (!manager) return <NotFound />;
 
@@ -55,6 +60,20 @@ export default function SafetyLog() {
           </ButtonLink>
         }
       />
+      {openAppeals.length > 0 && (
+        <section className="mb-8">
+          <h2 className="mb-3 flex items-center gap-2 text-xl">
+            Appeals to review
+            <span className="rounded-full bg-danger px-2 py-0.5 font-sans text-xs font-semibold text-bg">{openAppeals.length}</span>
+          </h2>
+          <div className="space-y-3">
+            {openAppeals.map((a) => (
+              <AppealReview key={a.id} appeal={a} attempt={attemptById.get(a.attempt_id)} person={roster.byId.get(a.user_id)} questions={questions} keysById={testKeys.byId} />
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted">
           {passedCount} of {everyone.length} passed
@@ -86,6 +105,7 @@ export default function SafetyLog() {
               onToggle={() => setOpen(open === p.id ? null : p.id)}
               questions={questions}
               keysById={testKeys.byId}
+              appealByAttempt={appealByAttempt}
             />
           ))}
         </Card>
@@ -101,6 +121,7 @@ function PersonRow({
   onToggle,
   questions,
   keysById,
+  appealByAttempt,
 }: {
   person: Profile;
   attempts: TestAttempt[];
@@ -108,6 +129,7 @@ function PersonRow({
   onToggle: () => void;
   questions: Map<string, TestQuestion>;
   keysById: Map<string, TestKey>;
+  appealByAttempt: Map<string, TestAppeal>;
 }) {
   const last = attempts[0];
   const byTeacher = attempts.some((a) => a.passed_by);
@@ -136,7 +158,7 @@ function PersonRow({
       {open && attempts.length > 0 && (
         <div className="space-y-3 px-4 pb-4">
           {attempts.map((a) => (
-            <AttemptCard key={a.id} attempt={a} personPassed={!!person.safety_passed_at} questions={questions} keysById={keysById} />
+            <AttemptCard key={a.id} attempt={a} personPassed={!!person.safety_passed_at} questions={questions} keysById={keysById} appeal={appealByAttempt.get(a.id)} />
           ))}
         </div>
       )}
@@ -144,7 +166,19 @@ function PersonRow({
   );
 }
 
-function AttemptCard({ attempt, personPassed, questions, keysById }: { attempt: TestAttempt; personPassed: boolean; questions: Map<string, TestQuestion>; keysById: Map<string, TestKey> }) {
+function AttemptCard({
+  attempt,
+  personPassed,
+  questions,
+  keysById,
+  appeal,
+}: {
+  attempt: TestAttempt;
+  personPassed: boolean;
+  questions: Map<string, TestQuestion>;
+  keysById: Map<string, TestKey>;
+  appeal?: TestAppeal;
+}) {
   const qc = useQueryClient();
   const toast = useToast();
   const [view, setView] = useState<'hidden' | 'missed' | 'all'>(attempt.passed ? 'hidden' : 'missed');
@@ -186,6 +220,7 @@ function AttemptCard({ attempt, personPassed, questions, keysById }: { attempt: 
           {attempt.passed_by_teacher_at ? ` on ${formatDate(attempt.passed_by_teacher_at)}` : ''}.
         </p>
       )}
+      {appeal && <AppealSummary appeal={appeal} />}
       {attempt.adjusted_by && (
         <p className="mt-1 text-xs text-muted">
           Points changed by {roster.byId.get(attempt.adjusted_by)?.full_name ?? 'a former member'}

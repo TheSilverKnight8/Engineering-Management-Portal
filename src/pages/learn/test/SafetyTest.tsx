@@ -12,6 +12,7 @@ import { dayLabel, formatDate, formatTime } from '../../../lib/time';
 import { safetyCheckpoint } from '../../../content/safety';
 import { PageHeader } from '../../../components/PageHeader';
 import { Button, ButtonLink, Card, EmptyState, Field, Input, LoadingBlock, cx } from '../../../components/ui';
+import { StudentAppeal } from './Appeals';
 import { MissedList, QuestionImage, QuestionInput, RETAKE_HOURS, ScoreLine, isTrueFalse, nextAttemptAt, shuffle } from './shared';
 
 const when = (d: Date) => `${dayLabel(d)} at ${formatTime(d)}`;
@@ -69,15 +70,18 @@ export default function SafetyTest() {
   } else if (profile?.safety_passed_at) {
     const passing = mine.data?.find((a) => a.passed);
     body = (
-      <Card className="p-6 text-center sm:p-8">
-        <ShieldCheck className="mx-auto mb-3 size-12 text-ok" />
-        <h2 className="text-2xl">You passed</h2>
-        <p className="mt-1 text-muted">
-          {formatDate(profile.safety_passed_at)}
-          {passing?.passed_by ? ' · marked as passed by a teacher' : passing ? ` · ${passing.score} / ${passing.possible}` : ''}
-        </p>
-        <p className="mt-3 text-sm text-muted">You are cleared for shop access. You do not need to take the test again.</p>
-      </Card>
+      <div className="space-y-4">
+        <Card className="p-6 text-center sm:p-8">
+          <ShieldCheck className="mx-auto mb-3 size-12 text-ok" />
+          <h2 className="text-2xl">You passed</h2>
+          <p className="mt-1 text-muted">
+            {formatDate(profile.safety_passed_at)}
+            {passing?.passed_by ? ' · marked as passed by a teacher' : passing ? ` · ${passing.score} / ${passing.possible}` : ''}
+          </p>
+          <p className="mt-3 text-sm text-muted">You are cleared for shop access. You do not need to take the test again.</p>
+        </Card>
+        {passing && <StudentAppeal attempt={passing} images={images} canAppeal={false} />}
+      </div>
     );
   } else if (next && mine.data?.[0]) {
     body = (
@@ -95,6 +99,7 @@ export default function SafetyTest() {
           </div>
         </Card>
         <MissedCard attempt={mine.data[0]} images={images} />
+        <StudentAppeal attempt={mine.data[0]} images={images} canAppeal />
       </div>
     );
   } else if (questions.length === 0) {
@@ -107,6 +112,8 @@ export default function SafetyTest() {
     let n = 0;
     body = (
       <form onSubmit={onSubmit} className="space-y-5">
+        {/* The latest attempt can still be appealed until this test is submitted. */}
+        {mine.data?.[0] && !mine.data[0].passed && <StudentAppeal attempt={mine.data[0]} images={images} canAppeal />}
         <Card className="p-5 sm:p-6">
           <ul className="mb-5 space-y-1.5 text-[0.9375rem]">
             <li>You need 100% to pass.</li>
@@ -205,6 +212,7 @@ function ResultCard({ attempt, images }: { attempt: TestAttempt; images: Map<str
         </div>
       </Card>
       <MissedCard attempt={attempt} images={images} />
+      <StudentAppeal attempt={attempt} images={images} canAppeal />
     </div>
   );
 }

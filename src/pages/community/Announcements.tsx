@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
+import { Link } from 'react-router';
+import { Plus, Scale } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
-import { keys, useAnnouncements, useAnnouncementsSeen } from '../../lib/queries';
+import { keys, useAnnouncements, useAnnouncementsSeen, useNotifications } from '../../lib/queries';
 import { db } from '../../lib/supabase';
 import { canAnnounce, type Announcement } from '../../lib/types';
 import { PageHeader } from '../../components/PageHeader';
-import { Button, EmptyState, LoadingBlock } from '../../components/ui';
+import { Button, Card, EmptyState, LoadingBlock, SectionTitle, cx } from '../../components/ui';
+import { relativeTime } from '../../lib/time';
 import { CommunityTabs } from './CommunityTabs';
 import { FeedCard } from './FeedCard';
 import { PostComposer } from './PostComposer';
@@ -62,6 +64,8 @@ export default function Announcements() {
         <CommunityTabs />
       </div>
 
+      <ForYou />
+
       {announcements.isLoading ? (
         <LoadingBlock />
       ) : rows.length === 0 ? (
@@ -84,5 +88,49 @@ export default function Announcements() {
         </button>
       )}
     </div>
+  );
+}
+
+// Private notices for the signed-in member (for example about safety test
+// appeals). Opening this page marks them read, which clears them from the bell.
+function ForYou() {
+  const notices = useNotifications();
+  const qc = useQueryClient();
+  const unreadAtOpen = useRef<Set<string> | null>(null);
+  if (unreadAtOpen.current === null && notices.data) unreadAtOpen.current = new Set(notices.data.filter((n) => !n.read_at).map((n) => n.id));
+  const hasUnread = (notices.data ?? []).some((n) => !n.read_at);
+  useEffect(() => {
+    if (!hasUnread) return;
+    void db()
+      .rpc('mark_notifications_read')
+      .then(() => qc.invalidateQueries({ queryKey: keys.notifications }));
+  }, [hasUnread, qc]);
+
+  const rows = (notices.data ?? []).slice(0, 5);
+  if (rows.length === 0) return null;
+  return (
+    <section className="mx-auto mb-8 max-w-2xl">
+      <SectionTitle>For you</SectionTitle>
+      <Card className="divide-y divide-line overflow-hidden">
+        {rows.map((n) => {
+          const fresh = unreadAtOpen.current?.has(n.id);
+          return (
+            <Link key={n.id} to={n.link ?? '/'} className={cx('flex gap-3 p-4 transition hover:bg-raised', fresh && 'bg-accent/5')}>
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-navy/10 text-navy">
+                <Scale className="size-[1.125rem]" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center gap-2">
+                  <span className="font-medium">{n.title}</span>
+                  {fresh && <span className="rounded-full bg-accent px-1.5 py-px text-[0.625rem] font-semibold uppercase tracking-wide text-on-accent">New</span>}
+                </span>
+                {n.body && <span className="mt-0.5 block whitespace-pre-wrap text-sm text-muted">{n.body}</span>}
+                <span className="mt-1 block text-xs text-muted">{relativeTime(n.created_at)}</span>
+              </span>
+            </Link>
+          );
+        })}
+      </Card>
+    </section>
   );
 }

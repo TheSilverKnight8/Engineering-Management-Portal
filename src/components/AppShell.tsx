@@ -6,7 +6,7 @@ import { CroswellLogo, CroswellMark } from '../graphics/Logo';
 import { APP_NAME, CLASS_NAME, SCHOOL_NAME } from '../config';
 import { useAuth } from '../lib/auth';
 import { canModerate } from '../lib/types';
-import { useAnnouncementsLive, useReports, useUnreadAnnouncements } from '../lib/queries';
+import { useAnnouncementsLive, useNotifications, useNotificationsLive, useReports, useUnreadAnnouncements } from '../lib/queries';
 import { Avatar, Kbd, cx } from './ui';
 import { SearchPalette } from './SearchPalette';
 
@@ -78,8 +78,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isMod = canModerate(profile);
   const reports = useReports(isMod);
   const openReports = (reports.data ?? []).filter((r) => !r.resolved_at).length;
-  const unread = useUnreadAnnouncements();
+  // The bell counts new announcements and this member's unread private notices.
+  const notices = useNotifications();
+  const unread = useUnreadAnnouncements() + (notices.data ?? []).filter((n) => !n.read_at).length;
   useAnnouncementsLive();
+  useNotificationsLive();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

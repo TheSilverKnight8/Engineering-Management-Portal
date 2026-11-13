@@ -10,7 +10,7 @@ import { ToolArt } from '../../graphics/ToolArt';
 import { PageHeader } from '../../components/PageHeader';
 import { ButtonLink, Card, SectionTitle, cx } from '../../components/ui';
 import { useAuth } from '../../lib/auth';
-import { useMyAttempts } from '../../lib/queries';
+import { useAllAppeals, useMyAttempts } from '../../lib/queries';
 import { canManageTest } from '../../lib/types';
 import { dayLabel, formatDate, formatTime } from '../../lib/time';
 import { nextAttemptAt } from './test/shared';
@@ -129,6 +129,8 @@ export default function Safety() {
 function CheckpointCard() {
   const { profile } = useAuth();
   const mine = useMyAttempts();
+  const appeals = useAllAppeals(canManageTest(profile));
+  const openAppeals = (appeals.data ?? []).filter((a) => a.status === 'open').length;
   const next = nextAttemptAt(mine.data);
   const passed = profile?.safety_passed_at;
   return (
@@ -165,6 +167,11 @@ function CheckpointCard() {
               <ButtonLink to="/learn/safety/log">
                 <ClipboardList className="size-4" />
                 Pass log
+                {openAppeals > 0 && (
+                  <span className="rounded-full bg-danger px-1.5 py-px font-sans text-xs font-semibold normal-case tracking-normal text-bg" aria-label={`${openAppeals} appeals to review`}>
+                    {openAppeals}
+                  </span>
+                )}
               </ButtonLink>
               <ButtonLink to="/learn/safety/test/edit">
                 <PencilLine className="size-4" />
